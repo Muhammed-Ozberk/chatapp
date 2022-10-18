@@ -38,7 +38,7 @@ router.post('/register', (req, res, next) => {
         });
     } else {
         console.log(req.body);
-        res.redirect('/register');
+        res.render(viewPath, { status: true , message:"Kayıt başarıyla gerçekleşti"});
     }
 })
 
