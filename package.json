@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
@@ -15,7 +16,8 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.25.2",
     "twig": "~0.10.3",
-    "umzug": "^3.2.1"
+    "umzug": "^3.2.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.5.1"

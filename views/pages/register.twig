@@ -8,20 +8,21 @@
             <img src="assets/images/logo-light.png" alt="" height="30" class="logo logo-light">
         </a>
         <h4>Sign up</h4>
-        <p class="text-muted mb-4">Get your Chatvia account now.</p>            
+        <p class="text-muted mb-4">Get your Chatvia account now.</p>
+        <p> {{status}} </p>            
     </div>
     <div class="card">
         <div class="card-body p-4">
             <div class="p-3">
-                <form action="/register" method="POST">
-                    {% include 'partials/msg.twig' %}
+                {# <form name="registerForm"> #}
+                    {# {% include 'partials/msg.twig' %} #}
                     <div class="mb-3">
                         <label class="form-label">Username</label>
                         <div class="input-group bg-soft-light mb-3 rounded-3">
                             <span class="input-group-text border-light text-muted" id="basic-addon6">
                                 <i class="ri-user-2-line"></i>
                             </span>
-                            <input name="username" type="text" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Username" aria-label="Enter Username" aria-describedby="basic-addon6">                                    
+                            <input name="username" id="username" type="text" value="" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Username" aria-label="Enter Username" required aria-describedby="basic-addon6">                                    
                         </div>
                     </div>
                     <div class="mb-3">
@@ -30,7 +31,7 @@
                             <span class="input-group-text text-muted" id="basic-addon5">
                                 <i class="ri-mail-line"></i>
                             </span>
-                            <input name="email" type="email" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Email" aria-label="Enter Email" aria-describedby="basic-addon5">                                           
+                            <input name="email" id="email" type="email" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Email" aria-label="Enter Email" aria-describedby="basic-addon5">                                           
                         </div>
                     </div>
                     <div class="mb-4">
@@ -39,16 +40,16 @@
                             <span class="input-group-text border-light text-muted" id="basic-addon7">
                                 <i class="ri-lock-2-line"></i>
                             </span>
-                            <input name="password" type="password" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon7">                                               
+                            <input name="password" id="password" type="password" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon7">                                               
                         </div>
                     </div>
                     <div class="d-grid">
-                        <button class="btn btn-primary waves-effect waves-light" type="submit">Sign up</button>
+                        <button class="btn btn-primary waves-effect waves-light" id="submit" type="submit">Sign up</button>
                     </div>
                     <div class="mt-4 text-center">
                         <p class="text-muted mb-0">By registering you agree to the Chatvia <a href="#" class="text-primary">Terms of Use</a></p>
                     </div>                                      
-                </form>
+                {# </form> #}
             </div>
         </div>
     </div>
@@ -57,5 +58,31 @@
         <p>© <script>document.write(new Date().getFullYear())</script> Chatvia. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
     </div>
 
+{% endblock %}
+
+{% block javascript %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<script>
+'use strict';
+
+document.getElementById("submit").onclick = formSubmit;
+var username = document.getElementById("username");
+var username = document.getElementById("email");
+var username = document.getElementById("password");
+
+function formSubmit(){
+    $.ajax({
+    method: "POST",
+    url: "register-post",
+    data: {username:username.value}
+  })
+    .done(function( msg ) {
+        alert( "Data Saved: " + msg );
+    });
+}
+
+</script>
 {% endblock %}
     
