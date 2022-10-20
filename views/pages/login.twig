@@ -12,14 +12,14 @@
     <div class="card">
         <div class="card-body p-4">
             <div class="p-3">
-                <form action="/login" method="POST">
+                <form action="/login-post" method="POST">
                     <div class="mb-3">
                         <label class="form-label">Username</label>
                         <div class="input-group mb-3 bg-soft-light rounded-3">
                             <span class="input-group-text text-muted" id="basic-addon3">
                                 <i class="ri-user-2-line"></i>
                             </span>
-                            <input name="username" type="text" class="form-control form-control-lg border-light bg-soft-light" placeholder="Enter Username" aria-label="Enter Username" aria-describedby="basic-addon3">
+                            <input name="username" type="text" class="form-control form-control-lg border-light bg-soft-light" placeholder="Enter Username" aria-label="Enter Username" aria-describedby="basic-addon3" required>
                         </div>
                     </div>
                     <div class="mb-4">
@@ -31,7 +31,7 @@
                             <span class="input-group-text text-muted" id="basic-addon4">
                                 <i class="ri-lock-2-line"></i>
                             </span>
-                            <input name="password" type="password" class="form-control form-control-lg border-light bg-soft-light" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon4">
+                            <input name="password" type="password" class="form-control form-control-lg border-light bg-soft-light" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon4" required>
                         </div>
                     </div>
                     <div class="form-check mb-4">

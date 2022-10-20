@@ -9,13 +9,12 @@
         </a>
         <h4>Sign up</h4>
         <p class="text-muted mb-4">Get your Chatvia account now.</p>
-        <p> {{status}} </p>            
     </div>
     <div class="card">
         <div class="card-body p-4">
             <div class="p-3">
-                {# <form name="registerForm"> #}
-                    {# {% include 'partials/msg.twig' %} #}
+                <form action="/register-post" method="POST">
+                    {% include 'partials/msg.twig' %}
                     <div class="mb-3">
                         <label class="form-label">Username</label>
                         <div class="input-group bg-soft-light mb-3 rounded-3">
@@ -31,7 +30,7 @@
                             <span class="input-group-text text-muted" id="basic-addon5">
                                 <i class="ri-mail-line"></i>
                             </span>
-                            <input name="email" id="email" type="email" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Email" aria-label="Enter Email" aria-describedby="basic-addon5">                                           
+                            <input name="email" id="email" type="email" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Email" aria-label="Enter Email" aria-describedby="basic-addon5" required>                                           
                         </div>
                     </div>
                     <div class="mb-4">
@@ -40,7 +39,7 @@
                             <span class="input-group-text border-light text-muted" id="basic-addon7">
                                 <i class="ri-lock-2-line"></i>
                             </span>
-                            <input name="password" id="password" type="password" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon7">                                               
+                            <input name="password" id="password" type="password" class="form-control form-control-lg bg-soft-light border-light" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon7" required >                                               
                         </div>
                     </div>
                     <div class="d-grid">
@@ -48,8 +47,8 @@
                     </div>
                     <div class="mt-4 text-center">
                         <p class="text-muted mb-0">By registering you agree to the Chatvia <a href="#" class="text-primary">Terms of Use</a></p>
-                    </div>                                      
-                {# </form> #}
+                    </div>    
+                </form>                                  
             </div>
         </div>
     </div>
@@ -62,27 +61,44 @@
 
 {% block javascript %}
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+{# <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
 <script>
 'use strict';
 
 document.getElementById("submit").onclick = formSubmit;
 var username = document.getElementById("username");
-var username = document.getElementById("email");
-var username = document.getElementById("password");
+var email = document.getElementById("email");
+var password = document.getElementById("password");
+var msgAlertStrong = document.getElementById("msgAlertStrong");
+var msgAlert = document.getElementById("msgAlert");
 
 function formSubmit(){
     $.ajax({
     method: "POST",
     url: "register-post",
-    data: {username:username.value}
-  })
-    .done(function( msg ) {
-        alert( "Data Saved: " + msg );
+    dataType: 'json',
+    data: {username : username.value, email : email.value, password : password.value},
+  }).done((res) => {
+        console.log(res)
+        alert( res.data );
+    }).fail((err)=>{
+        err=err.responseJSON;
+        console.log(err.error);
+        if(err.error.field == "username"){
+            msgAlertStrong.innerHTML = "Kullanıcı adı boş olamaz";
+            msgAlert.style.display = "block";
+        }else if(err.error.field == "email"){
+            msgAlertStrong.innerHTML = "Email alanı boş olamaz";
+            msgAlert.style.display = "block";
+        }else if(err.error.field == "password"){
+            msgAlertStrong.innerHTML = "Şifre alanı boş olamaz";
+            msgAlert.style.display = "block";
+        }
+        
     });
 }
 
-</script>
+</script> #}
 {% endblock %}
     
