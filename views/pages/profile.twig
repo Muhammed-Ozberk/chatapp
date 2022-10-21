@@ -24,10 +24,17 @@
 
                             <div class="text-center p-4 border-bottom">
                                 <div class="mb-4">
-                                    <img src="assets/images/users/avatar-1.jpg" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                                    {# <img src="assets/images/users/avatar-1.jpg" class="rounded-circle avatar-lg img-thumbnail" alt=""> #}
+                                    <div class="chat-user-img align-self-center ms-0">
+                                        <div class="avatar-lg img-thumbnail" style="position: relative; margin: auto;">
+                                            <span class="avatar-title rounded-circle bg-soft-primary text-primary h1">
+                                                D
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <h5 class="font-size-16 mb-1 text-truncate">Patricia Smith</h5>
+                                <h5 class="font-size-16 mb-1 text-truncate">{{data.username}}</h5>
                                 <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0 d-inline-block"></i> Active</p>
                             </div>
                             <!-- End profile user -->
@@ -51,23 +58,23 @@
                                         <div id="about" class="accordion-collapse collapse show" aria-labelledby="about2" data-bs-parent="#tabprofile">
                                             <div class="accordion-body">
                                                 <div>
-                                                    <p class="text-muted mb-1">Name</p>
-                                                    <h5 class="font-size-14">Patricia Smith</h5>
+                                                    <p class="text-muted mb-1">User Name</p>
+                                                    <h5 class="font-size-14">{{data.username}}</h5>
                                                 </div>
 
                                                 <div class="mt-4">
                                                     <p class="text-muted mb-1">Email</p>
-                                                    <h5 class="font-size-14">adc@123.com</h5>
+                                                    <h5 class="font-size-14">{{data.email}}</h5>
                                                 </div>
 
                                                 <div class="mt-4">
                                                     <p class="text-muted mb-1">Time</p>
-                                                    <h5 class="font-size-14">11:40 AM</h5>
+                                                    <h5 class="font-size-14" id="showTime"></h5>
                                                 </div>
 
                                                 <div class="mt-4">
                                                     <p class="text-muted mb-1">Location</p>
-                                                    <h5 class="font-size-14 mb-0">California, USA</h5>
+                                                    <h5 class="font-size-14 mb-0">Elbistan, Türkiye</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -245,3 +252,16 @@
                     {# </div> #}
                     <!-- End Profile tab-pane -->
                     {% endblock %}
+
+{% block javascript %}
+
+<script>
+function instantTime() {
+    var date = new Date();
+    document.getElementById("showTime").innerHTML = date.getHours()+":"+date.getMinutes();
+}
+instantTime();
+setInterval(instantTime, 60000); 
+</script> 
+
+{% endblock %}

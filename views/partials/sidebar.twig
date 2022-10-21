@@ -20,27 +20,27 @@
                 <div class="flex-lg-column my-auto">
                     <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Profile">
-                            <a class="nav-link {% if activePage == "profile" %}active{% endif %}"  href="/profile" >
+                            <a class="nav-link {% if data.activePage == "profile" %}active{% endif %}"  href="/profile" >
                                 <i class="ri-user-2-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Chats">
-                            <a class="nav-link {% if activePage == "chats" %}active{% endif %}" href="/chats">
+                            <a class="nav-link {% if data.activePage == "chats" %}active{% endif %}" href="/chats">
                                 <i class="ri-message-3-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Groups">
-                            <a class="nav-link {% if activePage == "groups" %}active{% endif %}" href="/groups">
+                            <a class="nav-link {% if data.activePage == "groups" %}active{% endif %}" href="/groups">
                                 <i class="ri-group-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Contacts">
-                            <a class="nav-link {% if activePage == "contacts" %}active{% endif %}" href="/contacts">
+                            <a class="nav-link {% if data.activePage == "contacts" %}active{% endif %}" href="/contacts">
                                 <i class="ri-contacts-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
-                            <a class="nav-link {% if activePage == "settings" %}active{% endif %}" href="/settings">
+                            <a class="nav-link {% if data.activePage == "settings" %}active{% endif %}" href="/settings">
                                 <i class="ri-settings-2-line"></i>
                             </a>
                         </li>

@@ -32,7 +32,7 @@ module.exports = function (passport) {
 
     passport.serializeUser(function (user, cb) {
         process.nextTick(function () {
-            cb(null, { id: user.userID, username: user.username });
+            cb(null, { id: user.userID, username: user.username, email: user.email });
         });
     });
 
