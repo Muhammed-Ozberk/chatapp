@@ -39,9 +39,21 @@
         {% include 'partials/sidebar.twig' %}
 
 
-        {% include 'partials/chatSidebar.twig' %}
+            <!-- start chat-leftsidebar -->
+            <div class="chat-leftsidebar me-lg-1 ms-lg-0">
 
-        {% block body %} {% endblock %}
+                <div class="tab-content">
+
+                    {% block chatSidebar %} {% endblock %}
+
+                </div>
+                <!-- end tab content -->
+
+            </div>
+            <!-- end chat-leftsidebar -->
+
+
+        {% include 'partials/userChat.twig' %}
 
 
             

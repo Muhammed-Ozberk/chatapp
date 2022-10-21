@@ -8,6 +8,16 @@ const loggedIn = function (req, res, next) {
     } 
 }
 
+const notLoggedIn = function (req, res, next) {
+
+    if (!req.isAuthenticated()) {
+        return next();
+    }
+    else {
+        res.redirect('/chats');
+    } 
+}
+
 // const notLoggedIn = function (req, res, next) {
 //     if (!req.isAuthenticated()) {
 //         return next();
@@ -17,4 +27,4 @@ const loggedIn = function (req, res, next) {
 //     }
 // }
 
-module.exports = loggedIn;
+module.exports = { loggedIn, notLoggedIn };

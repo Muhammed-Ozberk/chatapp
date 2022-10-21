@@ -20,27 +20,27 @@
                 <div class="flex-lg-column my-auto">
                     <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Profile">
-                            <a class="nav-link" id="pills-user-tab" data-bs-toggle="pill" href="#pills-user" role="tab">
+                            <a class="nav-link {% if activePage == "profile" %}active{% endif %}"  href="/profile" >
                                 <i class="ri-user-2-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Chats">
-                            <a class="nav-link active" id="pills-chat-tab" data-bs-toggle="pill" href="#pills-chat" role="tab">
+                            <a class="nav-link {% if activePage == "chats" %}active{% endif %}" href="/chats">
                                 <i class="ri-message-3-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Groups">
-                            <a class="nav-link" id="pills-groups-tab" data-bs-toggle="pill" href="#pills-groups" role="tab">
+                            <a class="nav-link {% if activePage == "groups" %}active{% endif %}" href="/groups">
                                 <i class="ri-group-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Contacts">
-                            <a class="nav-link" id="pills-contacts-tab" data-bs-toggle="pill" href="#pills-contacts" role="tab">
+                            <a class="nav-link {% if activePage == "contacts" %}active{% endif %}" href="/contacts">
                                 <i class="ri-contacts-line"></i>
                             </a>
                         </li>
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
-                            <a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#pills-setting" role="tab">
+                            <a class="nav-link {% if activePage == "settings" %}active{% endif %}" href="/settings">
                                 <i class="ri-settings-2-line"></i>
                             </a>
                         </li>
@@ -75,7 +75,7 @@
                                 <a class="dropdown-item" href="#">Profile <i class="ri-profile-line float-end text-muted"></i></a>
                                 <a class="dropdown-item" href="#">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="auth-login.html">Log out <i class="ri-logout-circle-r-line float-end text-muted"></i></a>
+                                <a class="dropdown-item" href="/logout">Log out <i class="ri-logout-circle-r-line float-end text-muted"></i></a>
                             </div>
                         </li>
                     </ul>

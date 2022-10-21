@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 require('../helpers/passport')(passport);
+const authorize = require('../middleware/authorize').notLoggedIn;
 
 
 /** DB Models */
@@ -11,14 +12,14 @@ const { Op } = require("sequelize");
 const Users = allModels.Users;
 /** DB Models END */
 
-router.get('/login', (req, res, next) => {
+router.get('/login',authorize, (req, res, next) => {
     res.render('pages/login', { title: "Login" });
 });
 
-router.post('/login-post', (req, res, next) => {
+router.post('/login-post',authorize, (req, res, next) => {
 
     passport.authenticate('local', {
-        successRedirect: '/',
+        successRedirect: '/chats',
         failureRedirect: '/login',
         failureMessage: true
     })(req, res, next);
@@ -26,7 +27,7 @@ router.post('/login-post', (req, res, next) => {
     
 });
 
-router.post('/logout', function (req, res, next) {
+router.get('/logout', function (req, res, next) {
     req.logout(function (err) {
         if (err) { return next(err); }
         res.redirect('/');

@@ -54,16 +54,15 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     // Session expires after 1 min of inactivity.
-    expires: 60000 
+    expires: 60000 * 5 
 }
 }));
 
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-
 app.use('/', authRouter);
-app.use(authorize);
+app.use(authorize.loggedIn);
 app.use('/', homeRouter);
 
 // catch 404 and forward to error handler
