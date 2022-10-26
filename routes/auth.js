@@ -16,15 +16,22 @@ router.get('/login',authorize, (req, res, next) => {
     res.render('pages/login', { title: "Login" });
 });
 
+
+router.get('/login', (req, res, next) => {
+    res.render('pages/login', { title: "Login" });
+});
+
+router.get('/register', (req, res, next) => {
+    res.render('pages/register', { title: "Register" });
+});
+
 router.post('/login-post',authorize, (req, res, next) => {
 
     passport.authenticate('local', {
         successRedirect: '/chats',
         failureRedirect: '/login',
         failureMessage: true
-    })(req, res, next);
-    console.log(req.isAuthenticated());
-    
+    })(req, res, next);    
 });
 
 router.get('/logout', function (req, res, next) {
@@ -32,11 +39,6 @@ router.get('/logout', function (req, res, next) {
         if (err) { return next(err); }
         res.redirect('/');
     });
-});
-
-
-router.get('/register', (req, res, next) => {
-    res.render('pages/register', { title: "Register" });
 });
 
 
@@ -54,7 +56,6 @@ router.post('/register-post', async (req, res, next) => {
         return res.redirect(400, '/register');
     } else {
         try {
-            uuidv4();
             const user = await Users.findOne({
                 where: {
                     [Op.or]: [{ email: email }, { username: username }]
@@ -70,7 +71,6 @@ router.post('/register-post', async (req, res, next) => {
                     password: hashPassword,
                 });
                 if (newUser) {
-                    console.log(newUser);
                     res.redirect('/login');
                 } else {
                     return res.render(viewPath, {

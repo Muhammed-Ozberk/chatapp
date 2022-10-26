@@ -10,7 +10,6 @@ const Users = allModels.Users;
 module.exports = function (passport) {
 
     passport.use(new LocalStrategy(async (username, password, cb) => {
-
         try {
             const user = await Users.findOne({
                 where: { username: username }

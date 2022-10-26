@@ -1,24 +1,59 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/chats', function (req, res, next) {
+/** DB Models */
+const allModels = require("./../models");
+const { Op } = require("sequelize");
+const Users = allModels.Users;
+/** DB Models END */
+
+router.get('/chats', async function (req, res, next) {
 
   var activePage = "chats";
-
   var data = {
-    activePage
+    activePage,
   };
   res.render('pages/chats', { title: "Chats", data });
 });
 
-router.get('/contacts', function (req, res, next) {
+router.get('/contacts', async function (req, res, next) {
 
   var activePage = "contacts";
-
+  var userList = [];
   var data = {
     activePage,
+    userList
   };
-  res.render('pages/contacts', { title: "Contacts", data });
+  try {
+    const users = await Users.findAll({
+      attributes: [
+        'userID',
+        'username',
+        'email',
+      ],
+      where: {
+        username: {
+          [Op.ne]: req.session.passport.user.username
+        }
+      },
+      order: [
+        ['username', 'ASC'],
+      ]
+    });
+
+    if (users) {
+      users.forEach(element => {
+        userList.push(element);
+      });
+      res.render('pages/contacts', { title: "Contacts", data });
+    } else {
+      res.render('pages/contacts', { title: "Contacts", error: "Bilinmeyen bir hata oluştu" });
+    }
+
+  } catch (error) {
+    res.render('pages/contacts', { title: "Contacts", error: "Bilinmeyen bir hata oluştu" });
+  }
+
 });
 
 router.get('/groups', function (req, res, next) {

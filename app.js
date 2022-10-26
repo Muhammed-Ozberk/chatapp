@@ -47,7 +47,7 @@ var myStore = new SequelizeStore({
 });
 
 app.use(session({
-	key: 'session_cookie_name',
+  key: 'session_cookie_name',
 	secret: 'session_cookie_secret',
   store: myStore,
   resave: false,
