@@ -7,12 +7,15 @@ const { Op } = require("sequelize");
 const Users = allModels.Users;
 /** DB Models END */
 
+
 router.get('/chats', async function (req, res, next) {
 
   var activePage = "chats";
   var data = {
     activePage,
   };
+  
+
   res.render('pages/chats', { title: "Chats", data });
 });
 
