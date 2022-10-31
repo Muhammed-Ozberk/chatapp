@@ -1,22 +1,30 @@
 var express = require('express');
 var router = express.Router();
+var createRoom = require('../socket');
 
 /** DB Models */
 const allModels = require("./../models");
 const { Op } = require("sequelize");
 const Users = allModels.Users;
+const Rooms = allModels.Rooms;
 /** DB Models END */
 
 
 router.get('/chats', async function (req, res, next) {
 
+  const userID = req.session.passport.user.id;
   var activePage = "chats";
   var data = {
     activePage,
   };
-  
+  const room = await Rooms.findAll({
+    where: {
+      userID: userID
+    }
+  })
+  console.log(room[0].room);
 
-  res.render('pages/chats', { title: "Chats", data });
+  res.render('pages/chats', { title: "Chats", data, room });
 });
 
 router.get('/contacts', async function (req, res, next) {
@@ -93,6 +101,28 @@ router.get('/settings', function (req, res, next) {
     activePage,
   };
   res.render('pages/settings', { title: "Settings", data });
+});
+
+
+router.get('/contacts/:recipientID', async function (req, res, next) {
+  const recipientID = req.params.recipientID;
+  const userID = req.session.passport.user.id;
+  const room = createRoom();
+  if (room) {
+    const savedRoom = await Rooms.create({
+      room,
+      userID,
+      recipientID,
+    });
+    if (savedRoom) {
+      console.log(savedRoom.room);
+      res.redirect('/chats');
+    } else {
+      res.redirect('/contacts');
+    }
+  } else {
+    res.redirect('/contacts');
+  }
 });
 
 
