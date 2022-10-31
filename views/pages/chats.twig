@@ -25,7 +25,7 @@
     </div> <!-- .p-4 -->
 
     <!-- Start user status -->
-    <div class="px-4 pb-4" dir="ltr">
+    {# <div class="px-4 pb-4" dir="ltr">
       <div class="owl-carousel owl-theme" id="user-status-carousel">
         <div class="item">
           <a href="#" class="user-status-box">
@@ -102,7 +102,7 @@
         </div>
       </div>
       <!-- end user status carousel -->
-    </div>
+    </div> #}
     <!-- end user status -->
 
     <!-- Start chat-message-list -->
@@ -111,9 +111,9 @@
         Recent
       </h5>
 
-      <div class="chat-message-list px-2" data-simplebar>
+      <div class="chat-message-list px-2" data-simplebar style="height: calc(100vh - 188.4px);">
         <ul class="list-unstyled chat-list chat-user-list">
-          <li>
+          {# <li>
             <a href="#">
               <div class="d-flex">
                 <div class="chat-user-img online align-self-center me-3 ms-0">
@@ -163,10 +163,12 @@
                 </div>
               </div>
             </a>
-          </li>
+          </li> #}
+    {% for row in data.messageList[0] %}
 
           <li>
-            <a href="#">
+            <a>
+               <div id="{{row.room}}" onclick="chatScreen(id)">
               <div class="d-flex">
                 <div class="chat-user-img align-self-center me-3 ms-0">
                   <div class="avatar-xs">
@@ -177,20 +179,23 @@
                 </div>
                 <div class="flex-grow-1 overflow-hidden">
                   <h5 class="text-truncate font-size-15 mb-1">
-                    General
+                    {{row.username}}
                   </h5>
                   <p class="chat-user-message text-truncate mb-0">
-                    This theme is awesome!
+                    {{row.userID}}
                   </p>
                 </div>
                 <div class="font-size-11">
                   20 min
                 </div>
               </div>
-            </a>
+              </div>
+              </a>
           </li>
+    {% endfor %}
 
-          <li>
+
+          {# <li>
             <a href="#">
               <div class="d-flex">
                 <div class="chat-user-img online align-self-center me-3 ms-0">
@@ -292,7 +297,6 @@
               </div>
             </a>
           </li>
-
           <li>
             <a href="#">
               <div class="d-flex">
@@ -413,7 +417,7 @@
                 </div>
               </div>
             </a>
-          </li>
+          </li> #}
         </ul>
       </div>
     </div>
@@ -428,35 +432,28 @@
 
 {% endblock %}
 
-                    {% block userChat %} 
-            <div class="user-chat w-100 overflow-hidden" id="userChat"></div>
-                    
-                    {% endblock %}
+{% block userChat %} 
+  <div class="user-chat w-100 overflow-hidden" id="userChat"></div>
+{% endblock %}
 
 
 {% block javascript %}
   <script src="http://localhost:3001/socket.io/socket.io.js"></script>
-
   <script>
     var socket = io("http://localhost:3001");
 
-
     socket.on("connect", () => { 
-
-    {% for row in room %}
-      socket.on("{{row.room}}", (arg) => {
-      console.log(arg); 
-      chatScreen(arg);
-      }); 
-    {% endfor %}
+      console.log(socket.id)
     });
 
-    socket.on("disconnect", () => { console.log(socket.id);});
+    function sendMessage() {
+      socket.on("hello", (arg) => {
+      console.log(arg); // world
+      });
+    }
 
 
-
-
-    function chatScreen(msg) {
+    function chatScreen(id) {
     let div = document.getElementById("userChat");
        div.innerHTML = "";
        div.innerHTML += `               
@@ -546,7 +543,7 @@
                                             <div class="ctext-wrap">
                                                 <div class="ctext-wrap-content">
                                                     <p class="mb-0">
-                                                        ${msg}
+${id}
                                                     </p>
                                                     <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
                                                 </div>
@@ -1145,6 +1142,8 @@
                 </div>       `
     }
 
+
+    socket.on("disconnect", () => { console.log(socket.id);});
       
   </script>
 {% endblock %}

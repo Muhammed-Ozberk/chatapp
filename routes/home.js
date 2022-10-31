@@ -7,6 +7,7 @@ const allModels = require("./../models");
 const { Op } = require("sequelize");
 const Users = allModels.Users;
 const Rooms = allModels.Rooms;
+const sequelize = require('../models/index').sequelize;
 /** DB Models END */
 
 
@@ -14,17 +15,19 @@ router.get('/chats', async function (req, res, next) {
 
   const userID = req.session.passport.user.id;
   var activePage = "chats";
+
+  const messageList = await sequelize.query(`select users.userID,username,room from users 
+  inner join rooms on
+  users.userID = rooms.recipientID `);
+  console.log(messageList);
+  
+
   var data = {
     activePage,
+    messageList
   };
-  const room = await Rooms.findAll({
-    where: {
-      userID: userID
-    }
-  })
-  console.log(room[0].room);
 
-  res.render('pages/chats', { title: "Chats", data, room });
+  res.render('pages/chats', { title: "Chats", data });
 });
 
 router.get('/contacts', async function (req, res, next) {
@@ -107,7 +110,7 @@ router.get('/settings', function (req, res, next) {
 router.get('/contacts/:recipientID', async function (req, res, next) {
   const recipientID = req.params.recipientID;
   const userID = req.session.passport.user.id;
-  const room = createRoom();
+  const room = createRoom(recipientID);
   if (room) {
     const savedRoom = await Rooms.create({
       room,
@@ -115,7 +118,6 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
       recipientID,
     });
     if (savedRoom) {
-      console.log(savedRoom.room);
       res.redirect('/chats');
     } else {
       res.redirect('/contacts');

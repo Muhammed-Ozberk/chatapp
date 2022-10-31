@@ -13,11 +13,11 @@ const io = new Server(httpServer, {
 });
 var PORT = 3001;
 
-const createRoom = () => {
+const createRoom = (recipientName) => {
   const room = uuidv4();
   io.on("connection", (socket) => {
     console.log(socket.id);
-    io.emit(room, "selam");
+    io.emit(room, recipientName);
   });
   return room;
 }
