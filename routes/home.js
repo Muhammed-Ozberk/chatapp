@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var createRoom = require('../socket');
+var socket = require('../socket');
 
 /** DB Models */
 const allModels = require("./../models");
@@ -19,8 +19,16 @@ router.get('/chats', async function (req, res, next) {
   const messageList = await sequelize.query(`select users.userID,username,room from users 
   inner join rooms on
   users.userID = rooms.recipientID `);
-  console.log(messageList);
-  
+
+  const roomList = await Rooms.findAll({
+    attributes: [
+      'room',
+    ],
+    where: {
+      userID: userID
+    }
+  });
+  socket.sendMessage(roomList);
 
   var data = {
     activePage,
@@ -110,7 +118,7 @@ router.get('/settings', function (req, res, next) {
 router.get('/contacts/:recipientID', async function (req, res, next) {
   const recipientID = req.params.recipientID;
   const userID = req.session.passport.user.id;
-  const room = createRoom(recipientID);
+  const room = socket.createRoom(recipientID);
   if (room) {
     const savedRoom = await Rooms.create({
       room,

@@ -5,6 +5,8 @@ const app = express();
 const httpServer = createServer(app);
 const { v4: uuidv4 } = require('uuid');
 
+
+
 const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:3000",
@@ -22,10 +24,24 @@ const createRoom = (recipientName) => {
   return room;
 }
 
+const sendMessage = (rooms) => {
+  io.on("connection", (socket) => {
+    rooms.forEach(element => {
+      socket.on(element.room, (msg) => {
+        console.log(msg);
+        io.emit(element.room, msg);
+      });
+    });
+  });
+}
+
 
 
 httpServer.listen(PORT, () => {
   console.log(`Socket ${PORT} portundan ayaklandı`);
 });
 
-module.exports = createRoom;
+module.exports = {
+  createRoom,
+  sendMessage
+};

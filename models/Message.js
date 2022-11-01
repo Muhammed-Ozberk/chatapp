@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    var Rooms = sequelize.define('Rooms',
+    var Messages = sequelize.define('Messages',
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -9,14 +9,13 @@ module.exports = (sequelize, DataTypes) => {
             },
             room: DataTypes.STRING,
             userID: DataTypes.STRING,
-            recipientID: DataTypes.STRING,
+            message: DataTypes.STRING,
             createdAt: DataTypes.DATE,
             updatedAt: DataTypes.DATE
         }
     );
-
-    return Rooms;
+    return Messages;
 };
 
-//npx sequelize migration:create --name create-rooms
+//npx sequelize migration:create --name create-messages
 //npx sequelize-cli --config=config/database.js db:migrate
