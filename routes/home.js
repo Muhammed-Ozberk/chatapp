@@ -38,6 +38,39 @@ router.get('/chats', async function (req, res, next) {
   res.render('pages/chats', { title: "Chats", data });
 });
 
+router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
+
+  const userID = req.session.passport.user.id;
+  const { roomID, recipientID } = req.params;
+  var activePage = "chats";
+
+  const messageList = await sequelize.query(`select users.userID,username,room from users 
+  inner join rooms on
+  users.userID = rooms.recipientID `);
+
+  const roomList = await Rooms.findAll({
+    attributes: [
+      'room',
+    ],
+    where: {
+      userID: userID
+    }
+  });
+  socket.sendMessage(roomList);
+
+  var data = {
+    activePage,
+    messageList,
+    roomID,
+    recipientID,
+    userID
+  };
+
+  res.render('pages/chatsUser', { title: "Chats", data });
+});
+
+
+
 router.get('/contacts', async function (req, res, next) {
 
   var activePage = "contacts";

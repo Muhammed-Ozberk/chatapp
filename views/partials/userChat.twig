@@ -4,7 +4,7 @@
                 <div class="d-lg-flex">
 
                     <!-- start chat conversation section -->
-                    <div class="w-100 overflow-hidden position-relative">
+                    <div id="scbor" class="w-100 overflow-hidden position-relative">
                         <div class="p-3 p-lg-4 border-bottom user-chat-topbar">
                             <div class="row align-items-center">
                                 <div class="col-sm-4 col-8">
@@ -13,7 +13,7 @@
                                             <a href="javascript: void(0);" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
                                         </div>
                                         <div class="me-3 ms-0">
-                                            <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
+                                            <img src="/assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
                                         </div>
                                         <div class="flex-grow-1 overflow-hidden">
                                             <h5 class="font-size-16 mb-0 text-truncate"><a href="#" class="text-reset user-profile-show">Doris Brown</a> <i class="ri-record-circle-fill font-size-10 text-success d-inline-block ms-1"></i></h5>
@@ -76,11 +76,12 @@
     
                         <!-- start chat conversation -->
                         <div class="chat-conversation p-3 p-lg-4" data-simplebar="init">
-                            <ul class="list-unstyled mb-0">
-                                <li>
+                            <ul id="messagesList" class="list-unstyled mb-0">
+
+                                {# <li>
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-4.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-4.jpg" alt="">
                                         </div>
     
                                         <div class="user-chat-content">
@@ -111,7 +112,7 @@
                                 <li class="right">
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-1.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-1.jpg" alt="">
                                         </div>
     
                                         <div class="user-chat-content">
@@ -139,9 +140,9 @@
                                             <div class="conversation-name">Patricia Smith</div>
                                         </div>
                                     </div>
-                                </li>
+                                </li> #}
 
-                                <li> 
+                                {# <li> 
                                     <div class="chat-day-title">
                                         <span class="title">Today</span>
                                     </div>
@@ -150,7 +151,7 @@
                                 <li>
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-4.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-4.jpg" alt="">
                                         </div>
     
                                         <div class="user-chat-content">
@@ -204,7 +205,7 @@
                                 <li class="right">
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-1.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-1.jpg" alt="">
                                         </div>
     
                                         <div class="user-chat-content">
@@ -237,7 +238,7 @@
                                 <li>
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-4.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-4.jpg" alt="">
                                         </div>
     
                                         <div class="user-chat-content">
@@ -247,8 +248,8 @@
                                                     <ul class="list-inline message-img  mb-0">
                                                         <li class="list-inline-item message-img-list me-2 ms-0">
                                                             <div>
-                                                                <a class="popup-img d-inline-block m-1" href="assets/images/small/img-1.jpg" title="Project 1">
-                                                                    <img src="assets/images/small/img-1.jpg" alt="" class="rounded border">
+                                                                <a class="popup-img d-inline-block m-1" href="/assets/images/small/img-1.jpg" title="Project 1">
+                                                                    <img src="/assets/images/small/img-1.jpg" alt="" class="rounded border">
                                                                 </a>
                                                             </div>
                                                             <div class="message-img-link">
@@ -275,14 +276,14 @@
 
                                                         <li class="list-inline-item message-img-list">
                                                             <div>
-                                                                <a class="popup-img d-inline-block m-1" href="assets/images/small/img-2.jpg" title="Project 2">
-                                                                    <img src="assets/images/small/img-2.jpg" alt="" class="rounded border">
+                                                                <a class="popup-img d-inline-block m-1" href="/assets/images/small/img-2.jpg" title="Project 2">
+                                                                    <img src="/assets/images/small/img-2.jpg" alt="" class="rounded border">
                                                                 </a>
                                                             </div>
                                                             <div class="message-img-link">
                                                                 <ul class="list-inline mb-0">
                                                                     <li class="list-inline-item">
-                                                                        <a download="img-2.jpg" href="assets/images/small/img-2.jpg" class="fw-medium">
+                                                                        <a download="img-2.jpg" href="/assets/images/small/img-2.jpg" class="fw-medium">
                                                                             <i class="ri-download-2-line"></i>
                                                                         </a>                                                                        
                                                                     </li>
@@ -327,7 +328,7 @@
                                 <li class="right">
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-1.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-1.jpg" alt="">
                                         </div>
     
                                         <div class="user-chat-content">
@@ -350,7 +351,7 @@
                                                             <div class="ms-4 me-0">
                                                                 <div class="d-flex gap-2 font-size-20 d-flex align-items-start">
                                                                     <div>
-                                                                        <a download="admin_v1.0.zip" href="assets/images/small/admin_v1.0.zip" class="fw-medium">
+                                                                        <a download="admin_v1.0.zip" href="/assets/images/small/admin_v1.0.zip" class="fw-medium">
                                                                             <i class="ri-download-2-line"></i>
                                                                         </a> 
                                                                     </div>
@@ -394,7 +395,7 @@
                                 <li>
                                     <div class="conversation-list">
                                         <div class="chat-avatar">
-                                            <img src="assets/images/users/avatar-4.jpg" alt="">
+                                            <img src="/assets/images/users/avatar-4.jpg" alt="">
                                         </div>
                                         
                                         <div class="user-chat-content">
@@ -415,7 +416,7 @@
                                         </div>
                                         
                                     </div>
-                                </li>
+                                </li> #}
                                 
                             </ul>
                         </div>
@@ -427,7 +428,7 @@
                             <div class="row g-0">
                                 
                                 <div class="col">
-                                    <input type="text" class="form-control form-control-lg bg-light border-light" placeholder="Enter Message...">
+                                    <input id="messageInput" type="text" class="form-control form-control-lg bg-light border-light" placeholder="Enter Message...">
                                 </div>
                                 <div class="col-auto">
                                     <div class="chat-input-links ms-md-2 me-md-0">
@@ -443,7 +444,7 @@
                                                 </button>
                                             </li>
                                             <li class="list-inline-item">
-                                                <button type="submit" class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light">
+                                                <button id="submitButton" type="submit" class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light">
                                                     <i class="ri-send-plane-2-fill"></i>
                                                 </button>
                                             </li>
@@ -469,7 +470,7 @@
 
                         <div class="text-center p-4 border-bottom">
                             <div class="mb-4">
-                                <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                                <img src="/assets/images/users/avatar-4.jpg" class="rounded-circle avatar-lg img-thumbnail" alt="">
                             </div>
 
                             <h5 class="font-size-16 mb-1 text-truncate">Doris Brown</h5>
@@ -686,3 +687,123 @@
                 </div>
             </div>
             <!-- End User chat -->
+
+{% block javascript %}
+	<script src="http://localhost:3001/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io( "http://localhost:3001" );
+        var messageInput = document.getElementById( "messageInput" ); 
+        var messagesList = document.getElementById( "messagesList" );
+        var div = document.getElementById( "userChat" );
+        var scbor = document.getElementById( "scbor" );
+
+        document.getElementById( "submitButton" ).onclick =submitMessage;
+
+
+        socket.on( "connect", () => {
+            console.log( socket.id )
+        } );
+
+
+
+
+function submitMessage(){
+
+    console.log("burası çalıştı");
+    console.log(messageInput.value);
+  let item = document.createElement('li');
+  let att = document.createAttribute("class");
+
+  att.value = "right";
+  item.setAttributeNode(att);
+  item.innerHTML="";
+  item.innerHTML+=`
+     <div class="conversation-list">
+       <div class="chat-avatar">
+           <img src="/assets/images/users/avatar-1.jpg" alt="">
+       </div>
+       <div class="user-chat-content">
+           <div class="ctext-wrap">
+               <div class="ctext-wrap-content">
+                   <p class="mb-0">
+                       ${messageInput.value}
+                   </p>
+                   <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:02</span></p>
+               </div>
+                   
+               <div class="dropdown align-self-start">
+                   <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       <i class="ri-more-2-fill"></i>
+                   </a>
+                   <div class="dropdown-menu">
+                       <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                       <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
+                       <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                       <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                   </div>
+               </div>
+           </div>
+           
+           <div class="conversation-name">Patricia Smith</div>
+       </div>
+   </div>
+  `
+messagesList.appendChild(item);
+sendMessage(messageInput.value);
+messageInput.value="";
+};
+
+function sendMessage(message){
+  socket.emit('{{data.roomID}}', message);
+}
+
+socket.on('{{data.roomID}}', (msg) => {
+    console.log("bi de burası çalıştı");
+
+  let item = document.createElement('li');
+
+  item.innerHTML="";
+  item.innerHTML+=`
+      <div class="conversation-list">
+          <div class="chat-avatar">
+              <img src="/assets/images/users/avatar-4.jpg" alt="">
+          </div>
+          <div class="user-chat-content">
+              <div class="ctext-wrap">
+                  <div class="ctext-wrap-content">
+                      <p class="mb-0">
+                        ${ msg }
+                      </p>
+                      <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
+                  </div>
+                  <div class="dropdown align-self-start">
+                      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="ri-more-2-fill"></i>
+                      </a>
+                      <div class="dropdown-menu">
+                          <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                          <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
+                          <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                          <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                      </div>
+                  </div>
+              </div>
+              <div class="conversation-name">Doris Brown</div>
+          </div>
+      </div>
+  `
+    messagesList.appendChild(item);
+    {# userChat.scrollTo(0, 300); #}
+
+});
+
+
+
+socket.on( "disconnect", () => {
+console.log( socket.id );
+});
+	</script>
+
+{% endblock %}
+
+

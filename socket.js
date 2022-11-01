@@ -25,12 +25,14 @@ const createRoom = (recipientName) => {
 }
 
 const sendMessage = (rooms) => {
+  var message;
   io.on("connection", (socket) => {
     rooms.forEach(element => {
       socket.on(element.room, (msg) => {
         console.log(msg);
-        io.emit(element.room, msg);
+        socket.broadcast.emit(element.room, msg);
       });
+      socket
     });
   });
 }
