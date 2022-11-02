@@ -754,11 +754,13 @@ messageInput.value="";
 };
 
 function sendMessage(message){
+    console.log('{{data.roomID}}')
   socket.emit('{{data.roomID}}', message);
 }
 
 socket.on('{{data.roomID}}', (msg) => {
     console.log("bi de burası çalıştı");
+    console.log('{{data.roomID}}')
 
   let item = document.createElement('li');
 

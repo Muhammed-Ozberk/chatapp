@@ -48,15 +48,6 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
   inner join rooms on
   users.userID = rooms.recipientID `);
 
-  const roomList = await Rooms.findAll({
-    attributes: [
-      'room',
-    ],
-    where: {
-      userID: userID
-    }
-  });
-  socket.sendMessage(roomList);
 
   var data = {
     activePage,
