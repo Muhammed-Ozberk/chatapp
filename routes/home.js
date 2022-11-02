@@ -1,12 +1,15 @@
 var express = require('express');
 var router = express.Router();
-var socket = require('../socket');
+var io = require('../socket');
+const { v4: uuidv4 } = require('uuid');
+
 
 /** DB Models */
 const allModels = require("./../models");
 const { Op } = require("sequelize");
 const Users = allModels.Users;
 const Rooms = allModels.Rooms;
+const Messages = allModels.Messages;
 const sequelize = require('../models/index').sequelize;
 /** DB Models END */
 
@@ -28,7 +31,16 @@ router.get('/chats', async function (req, res, next) {
       userID: userID
     }
   });
-  socket.sendMessage(roomList);
+
+  io.on("connection", (socket) => {
+    roomList.forEach(element => {
+      console.log(element.room);
+      socket.on(element.room, (msg) => {
+        console.log(msg);
+        socket.broadcast.emit(element.room, msg);
+      });
+    });
+  });
 
   var data = {
     activePage,
@@ -48,13 +60,31 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
   inner join rooms on
   users.userID = rooms.recipientID `);
 
+  const messages = await Messages.findAll({
+    attributes: [
+      'room',
+      'userID',
+      'message',
+      'createdAt'
+    ],
+    where: {
+      room: roomID
+    },
+    order: [
+      ['id', 'ASC'],
+    ]
+  });
+
+  console.log(messages[0]);
+
 
   var data = {
     activePage,
     messageList,
     roomID,
     recipientID,
-    userID
+    userID,
+    messages
   };
 
   res.render('pages/chatsUser', { title: "Chats", data });
@@ -142,22 +172,83 @@ router.get('/settings', function (req, res, next) {
 router.get('/contacts/:recipientID', async function (req, res, next) {
   const recipientID = req.params.recipientID;
   const userID = req.session.passport.user.id;
-  const room = socket.createRoom(recipientID);
-  if (room) {
+  const room = uuidv4();
+  const searchRoom = await Rooms.findOne({
+    where: {
+      [Op.or]: [
+        {
+          [Op.and]: [
+            { userID: userID },
+            { recipientID: recipientID }
+          ]
+        },
+        {
+          [Op.and]: [
+            { userID: recipientID },
+            { recipientID: userID }
+          ]
+        }
+      ]
+    }
+  });
+
+  if (!searchRoom) {
     const savedRoom = await Rooms.create({
       room,
       userID,
       recipientID,
     });
-    if (savedRoom) {
-      res.redirect('/chats');
-    } else {
-      res.redirect('/contacts');
-    }
+    res.redirect(`/chats/${room}/${recipientID}`);
   } else {
-    res.redirect('/contacts');
+    console.log(searchRoom);
+    res.redirect(`/chats/${searchRoom.room}/${recipientID}`);
   }
+
+
+  // if (room) {
+  //   const savedRoom = await Rooms.create({
+  //     room,
+  //     userID,
+  //     recipientID,
+  //   });
+  //   if (savedRoom) {
+  //     res.redirect('/chats');
+  //   } else {
+  //     res.redirect('/contacts');
+  //   }
+  // } else {
+  //   res.redirect('/contacts');
+  // }
 });
+
+
+router.post('/message/save', async function (req, res, next) {
+  const { room, message } = req.body;
+  const userID = req.session.passport.user.id;
+
+  if (!room) {
+    res.json({ status: false });
+  } else if (!userID) {
+    res.json({ status: false });
+  } else if (!message) {
+    res.json({ status: false });
+  } else {
+    const recordedMessage = await Messages.create({
+      room,
+      userID,
+      message
+    });
+    if (recordedMessage) {
+      res.json({
+        status: true,
+        data: recordedMessage
+      })
+    } else {
+      res.json({ status: false });
+    }
+  }
+
+})
 
 
 module.exports = router;
