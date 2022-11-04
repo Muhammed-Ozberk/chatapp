@@ -26,7 +26,7 @@
 
 			<div class="chat-message-list px-2" data-simplebar style="height: calc(100vh - 188.4px);">
 				<ul class="list-unstyled chat-list chat-user-list">
-					{% for row in data.messageList[0] %}
+					{% for row in data.messageList %}
 
 						<li>
 							<a href="/chats/{{row.room}}/{{row.userID}}">

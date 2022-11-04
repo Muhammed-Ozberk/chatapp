@@ -8,6 +8,8 @@ global.env = process.env.env || 'development';
 var app = require('../app');
 var debug = require('debug')('chatapp:server');
 var http = require('http');
+var socketServer = require("../helpers/socketServer");
+
 
 
 const sequelize = require('../models').sequelize;
@@ -30,24 +32,27 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
- function startServer() {
+
+function startServer() {
   if (serverStarted) {
-      return;
+    return;
   } else {
-      serverStarted = true;
-      server.listen(port, function () {
-          console.log(`App started on ${env} and listening port ${port}`);
-      });
+    serverStarted = true;
+    socketServer.attach(server); // Socket
+    server.listen(port, function () {
+      console.log(`App started on ${env} and listening port ${port}`);
+    });
   }
 }
+
 
 sequelize.authenticate().then(() => {
   console.log('DB Connection has been established successfully.');
   sequelize.migrate().then(migrations => {
-      console.log(`Migrate is done ${migrations}`);
-      startServer();
+    console.log(`Migrate is done ${migrations}`);
+    startServer();
   }).catch(err => {
-      console.log("Can not migrate db " + err);
+    console.log("Can not migrate db " + err);
   });
 }).catch(err => {
   console.error('Unable to connect to the database:', err);

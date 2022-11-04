@@ -419,18 +419,20 @@
 {% block javascript %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-	<script src="http://localhost:3001/socket.io/socket.io.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
 
 	<script>
-		var socket = io( "http://localhost:3001" );
+            console.log("bura çalıştı bu sefer de")
+
+		    var socket = io();
+            socket.on("connect", () => {
+            console.log( socket.id )
+            });
+
         var messageInput = document.getElementById( "messageInput" ); 
         var messagesList = document.getElementById( "messagesList" );
 
         document.getElementById( "submitButton" ).onclick =submitMessage;
-
-        socket.on( "connect", () => {
-            console.log( socket.id )
-        } );
 
 
 function submitMessage(){
@@ -480,8 +482,8 @@ messageInput.value="";
 };
 
 function sendMessage(message){
-  console.log('{{data.roomID}}')
-  socket.emit('{{data.roomID}}', message);
+  console.log('gönderilen ye')
+  socket.emit('sendMessage', message,'{{data.roomID}}');
   saveMessage('{{data.roomID}}', message);
 }
 
@@ -533,14 +535,19 @@ function saveMessage(room,message){
     dataType: 'json',
     data: {room, message},
   }).done((res) => {
-        console.log(res.status)
+        console.log(res.status);
     }).fail((err)=>{
         console.log(err.status);
     });
 }
+socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
+
+
+
 
 socket.on( "disconnect", () => {
-console.log( socket.id );
+    console.log("çıkış yapıldı")
+    console.log( socket.id );
 });
 	</script>
 

@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var io = require('../socket');
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -19,27 +18,37 @@ router.get('/chats', async function (req, res, next) {
   const userID = req.session.passport.user.id;
   var activePage = "chats";
 
-  const messageList = await sequelize.query(`select users.userID,username,room from users 
-  inner join rooms on
-  users.userID = rooms.recipientID `);
+  const messageList = [];
+  const firstList = await sequelize.query(`select users.userID,room,username from users 
+  inner join rooms  on
+  users.userID = rooms.recipientID
+  where rooms.userID = '${userID}'`);
+
+  const secondList = await sequelize.query(`select users.userID,room,username from users 
+  inner join rooms  on
+  users.userID = rooms.userID
+  where rooms.recipientID = '${userID}'`);
+
+
+  firstList[0].forEach(element => {
+    messageList.push(element);
+  });
+
+  secondList[0].forEach(element => {
+    messageList.push(element);
+  });
+
 
   const roomList = await Rooms.findAll({
     attributes: [
       'room',
     ],
     where: {
-      userID: userID
+      [Op.or]: [
+        { userID: userID },
+        { recipientID: userID }
+      ]
     }
-  });
-
-  io.on("connection", (socket) => {
-    roomList.forEach(element => {
-      console.log(element.room);
-      socket.on(element.room, (msg) => {
-        console.log(msg);
-        socket.broadcast.emit(element.room, msg);
-      });
-    });
   });
 
   var data = {
@@ -56,9 +65,26 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
   const { roomID, recipientID } = req.params;
   var activePage = "chats";
 
-  const messageList = await sequelize.query(`select users.userID,username,room from users 
-  inner join rooms on
-  users.userID = rooms.recipientID `);
+  const messageList = [];
+  const firstList = await sequelize.query(`select users.userID,room,username from users 
+  inner join rooms  on
+  users.userID = rooms.recipientID
+  where rooms.userID = '${userID}'`);
+
+  const secondList = await sequelize.query(`select users.userID,room,username from users 
+  inner join rooms  on
+  users.userID = rooms.userID
+  where rooms.recipientID = '${userID}'`);
+
+
+  firstList[0].forEach(element => {
+    messageList.push(element);
+  });
+
+  secondList[0].forEach(element => {
+    messageList.push(element);
+  });
+
 
   const messages = await Messages.findAll({
     attributes: [
@@ -74,8 +100,6 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
       ['id', 'ASC'],
     ]
   });
-
-  console.log(messages[0]);
 
 
   var data = {
