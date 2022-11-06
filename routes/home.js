@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
+const chatList = require('../helpers/listFunction');
+
 
 /** DB Models */
 const allModels = require("./../models");
@@ -18,42 +20,13 @@ router.get('/chats', async function (req, res, next) {
   const userID = req.session.passport.user.id;
   var activePage = "chats";
 
-  const messageList = [];
-  const firstList = await sequelize.query(`select users.userID,room,username from users 
-  inner join rooms  on
-  users.userID = rooms.recipientID
-  where rooms.userID = '${userID}'`);
+  var messageList = await chatList(userID);
+  console.log(messageList);
 
-  const secondList = await sequelize.query(`select users.userID,room,username from users 
-  inner join rooms  on
-  users.userID = rooms.userID
-  where rooms.recipientID = '${userID}'`);
-
-
-  firstList[0].forEach(element => {
-    messageList.push(element);
-  });
-
-  secondList[0].forEach(element => {
-    messageList.push(element);
-  });
-
-
-  const roomList = await Rooms.findAll({
-    attributes: [
-      'room',
-    ],
-    where: {
-      [Op.or]: [
-        { userID: userID },
-        { recipientID: userID }
-      ]
-    }
-  });
 
   var data = {
     activePage,
-    messageList
+    messageList,
   };
 
   res.render('pages/chats', { title: "Chats", data });
@@ -65,26 +38,7 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
   const { roomID, recipientID } = req.params;
   var activePage = "chats";
 
-  const messageList = [];
-  const firstList = await sequelize.query(`select users.userID,room,username from users 
-  inner join rooms  on
-  users.userID = rooms.recipientID
-  where rooms.userID = '${userID}'`);
-
-  const secondList = await sequelize.query(`select users.userID,room,username from users 
-  inner join rooms  on
-  users.userID = rooms.userID
-  where rooms.recipientID = '${userID}'`);
-
-
-  firstList[0].forEach(element => {
-    messageList.push(element);
-  });
-
-  secondList[0].forEach(element => {
-    messageList.push(element);
-  });
-
+  var messageList = await chatList(userID);
 
   const messages = await Messages.findAll({
     attributes: [
@@ -111,10 +65,8 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
     messages
   };
 
-  res.render('pages/chatsUser', { title: "Chats", data });
+  res.render('pages/chats', { title: "Chats", data });
 });
-
-
 
 router.get('/contacts', async function (req, res, next) {
 
@@ -192,7 +144,6 @@ router.get('/settings', function (req, res, next) {
   res.render('pages/settings', { title: "Settings", data });
 });
 
-
 router.get('/contacts/:recipientID', async function (req, res, next) {
   const recipientID = req.params.recipientID;
   const userID = req.session.passport.user.id;
@@ -245,7 +196,6 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
   // }
 });
 
-
 router.post('/message/save', async function (req, res, next) {
   const { room, message } = req.body;
   const userID = req.session.passport.user.id;
@@ -272,6 +222,10 @@ router.post('/message/save', async function (req, res, next) {
     }
   }
 
+})
+
+router.post('chats/read', function (req,res,next) {
+  
 })
 
 

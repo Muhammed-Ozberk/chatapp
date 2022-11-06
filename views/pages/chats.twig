@@ -1,8 +1,6 @@
 {% extends 'layout/homeLayout.twig' %}
 {% block chatSidebar %}
-	<!-- Start chats tab-pane -->
-	{# <div class="tab-pane fade show active" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab"> #}
-	<!-- Start chats content -->
+
 		<div>
 			<div class="px-4 pt-4"> <h4 class="mb-4">
 				Chats
@@ -25,10 +23,12 @@
 			</h5>
 
 			<div class="chat-message-list px-2" data-simplebar style="height: calc(100vh - 188.4px);">
-				<ul class="list-unstyled chat-list chat-user-list">
+				<ul
+					class="list-unstyled chat-list chat-user-list">
+
 					{% for row in data.messageList %}
 
-						<li>
+						<li class="unread">
 							<a href="/chats/{{row.room}}/{{row.userID}}">
 									<div class="d-flex">
 										<div class="chat-user-img align-self-center me-3 ms-0">
@@ -42,27 +42,96 @@
 											<h5 class="text-truncate font-size-15 mb-1">
 												{{row.username}}
 											</h5>
-											<p class="chat-user-message text-truncate mb-0">
-												{{row.room}}
+											<p id="{{row.username}}" class="chat-user-message text-truncate mb-0">
+												{{row.lastMsg}}
 											</p>
 										</div>
-										<div class="font-size-11">
-											20 min
-										</div>
-									</div>
-							</a>
+                                        <div class="font-size-11" style="width:40px">12 min</div>        
+                                        <div id="{{row.room}}" class="unread-message">{% if row.messageQuantity %}<span class="badge badge-soft-danger rounded-pill">{{row.messageQuantity}}</span>{% endif %}</div>
+								    </div>
+							    </a>
 						</li>
 					{% endfor %}
+
 				</ul>
 			</div>
 		</div>
 		<!-- End chat-message-list -->
 	</div>
-	<!-- Start chats content -->
-{# </div> #}
-	<!-- End chats tab-pane -->
 
-	<!-- Start User chat -->
-	<!-- End User chat -->
 
 {% endblock %}
+
+{% if data.roomID %}
+{% block userChat %}
+        {% include 'partials/userChat.twig' %}
+{% endblock %}
+{% else %}
+
+{% block javascript %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+
+	<script>
+
+    var socket = io();
+    socket.on("connect", () => {
+        console.log( socket.id )
+    });
+    var quantityArray = [];
+
+	{% for row in data.messageList %}
+        quantityArray.push({room:'{{row.room}}',quantity:0});
+        socket.on('{{row.room}}', (msg) => {
+            var messagesQuantity = document.getElementById("{{row.room}}");
+			var lastMessage = document.getElementById("{{row.username}}");
+			let numb = messagesQuantity.childNodes.length;
+			if(numb != 0){
+				messagesQuantity.removeChild(messagesQuantity.firstElementChild);
+			}
+            let item = document.createElement('span');
+            let att = document.createAttribute("class");
+
+			lastMessage.innerHTML="";
+			lastMessage.innerHTML+=`${msg}`;
+            att.value = "badge badge-soft-danger rounded-pill";
+            item.setAttributeNode(att);
+            const found = quantityArray.find(element => element.room == '{{row.room}}');
+            const index = quantityArray.indexOf(found);
+            quantityArray[index].quantity++; 
+            item.innerHTML="";
+            item.innerHTML+=`${found.quantity}`
+            messagesQuantity.appendChild(item);
+
+        });
+
+	{% endfor %}
+
+function saveMessage(room,message){
+    $.ajax({
+    method: "POST",
+    url: "/message/save",
+    dataType: 'json',
+    data: {room, message},
+  }).done((res) => {
+        console.log(res.status);
+    }).fail((err)=>{
+        console.log(err.status);
+    });
+}
+
+socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
+
+socket.on( "disconnect", () => {
+    console.log("çıkış yapıldı")
+    console.log( socket.id );
+});
+	</script>
+
+{% endblock %}
+
+{% endif %}
+
+
+
