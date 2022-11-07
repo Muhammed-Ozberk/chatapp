@@ -13,6 +13,7 @@ const config = require(__dirname + '/config/database.js')[env];
 
 var homeRouter = require('./routes/home');
 var authRouter = require('./routes/auth');
+var apiRouter = require('./routes/api');
 
 
 var app = express();
@@ -48,14 +49,14 @@ var myStore = new SequelizeStore({
 
 app.use(session({
   key: 'session_cookie_name',
-	secret: 'session_cookie_secret',
+  secret: 'session_cookie_secret',
   store: myStore,
   resave: false,
   saveUninitialized: false,
   cookie: {
     // Session expires after 1 hours of inactivity.
     expires: 1000 * 60 * 60
-}
+  }
 }));
 
 app.use(passport.initialize());
@@ -64,6 +65,7 @@ app.use(passport.authenticate('session'));
 app.use('/', authRouter);
 app.use(authorize.loggedIn);
 app.use('/', homeRouter);
+app.use('/', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
