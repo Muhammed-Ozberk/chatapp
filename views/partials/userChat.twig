@@ -422,7 +422,6 @@
 	<script src="/socket.io/socket.io.js"></script>
 
 	<script>
-            console.log("bura çalıştı bu sefer de")
 
 		    var socket = io();
             socket.on("connect", () => {
@@ -481,14 +480,14 @@ sendMessage(messageInput.value);
 messageInput.value="";
 };
 
-function sendMessage(message){
+async function sendMessage(message){
   console.log('gönderilen ye')
+  await saveMessage('{{data.roomID}}', message,'{{data.recipientID}}');
   socket.emit('sendMessage', message,'{{data.roomID}}');
-  saveMessage('{{data.roomID}}', message);
 }
 
 socket.on('{{data.roomID}}', (msg) => {
-    console.log("bi de burası çalıştı");
+    console.log("bi de burası çalıştı evet evet");
     console.log('{{data.roomID}}')
 
   let item = document.createElement('li');
@@ -525,25 +524,70 @@ socket.on('{{data.roomID}}', (msg) => {
   `
     messagesList.appendChild(item);
     {# userChat.scrollTo(0, 300); #}
+    readMessage('{{data.roomID}}','{{data.recipientID}}');
 
 });
 
-function saveMessage(room,message){
-    $.ajax({
+async function saveMessage(room,message,recipientID) {
+    console.log("save message")
+    await $.ajax({
     method: "POST",
     url: "/message/save",
     dataType: 'json',
-    data: {room, message},
+    data: {room, message,recipientID},
   }).done((res) => {
         console.log(res.status);
     }).fail((err)=>{
         console.log(err.status);
     });
 }
+
+function readMessage(roomID,recipientID) {
+    console.log("read message")
+    $.ajax({
+    method: "POST",
+    url: "/chats/read",
+    dataType: 'json',
+    data: {roomID,recipientID},
+  }).done((res) => {
+        console.log(res.status);
+    }).fail((err)=>{
+        console.log(err.status);
+    });
+}
+    var quantityArray = [];
+
+	{% for row in data.messageList %}
+        {% if data.roomID != row.room %}
+        quantityArray.push({room:'{{row.room}}',quantity:0});
+        socket.on('{{row.room}}', (msg) => {
+			console.log("geldi");
+            var messagesQuantity = document.getElementById("{{row.room}}");
+			var lastMessage = document.getElementById("{{row.username}}");
+			let numb = messagesQuantity.childNodes.length;
+			if(numb != 0){
+				messagesQuantity.removeChild(messagesQuantity.firstElementChild);
+			}
+            let item = document.createElement('span');
+            let att = document.createAttribute("class");
+
+			lastMessage.innerHTML="";
+			lastMessage.innerHTML+=`${msg}`;
+            att.value = "badge badge-soft-danger rounded-pill";
+            item.setAttributeNode(att);
+            const found = quantityArray.find(element => element.room == '{{row.room}}');
+            const index = quantityArray.indexOf(found);
+            quantityArray[index].quantity++; 
+            item.innerHTML="";
+            item.innerHTML+=`${found.quantity}`
+            messagesQuantity.appendChild(item);
+
+        });
+        {% endif %}
+
+	{% endfor %}
+
 socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
-
-
-
 
 socket.on( "disconnect", () => {
     console.log("çıkış yapıldı")

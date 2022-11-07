@@ -38,6 +38,13 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
   const { roomID, recipientID } = req.params;
   var activePage = "chats";
 
+  const updateMessages = await sequelize.query(`update messages 
+      set isRead=true
+      where room="${roomID}" and userID="${recipientID}"
+  `)
+  console.log(updateMessages);
+
+
   var messageList = await chatList(userID);
 
   const messages = await Messages.findAll({
@@ -54,6 +61,8 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
       ['id', 'ASC'],
     ]
   });
+
+
 
 
   var data = {
@@ -168,36 +177,16 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
   });
 
   if (!searchRoom) {
-    const savedRoom = await Rooms.create({
-      room,
-      userID,
-      recipientID,
-    });
     res.redirect(`/chats/${room}/${recipientID}`);
   } else {
     console.log(searchRoom);
     res.redirect(`/chats/${searchRoom.room}/${recipientID}`);
   }
 
-
-  // if (room) {
-  //   const savedRoom = await Rooms.create({
-  //     room,
-  //     userID,
-  //     recipientID,
-  //   });
-  //   if (savedRoom) {
-  //     res.redirect('/chats');
-  //   } else {
-  //     res.redirect('/contacts');
-  //   }
-  // } else {
-  //   res.redirect('/contacts');
-  // }
 });
 
 router.post('/message/save', async function (req, res, next) {
-  const { room, message } = req.body;
+  const { room, message, recipientID } = req.body;
   const userID = req.session.passport.user.id;
 
   if (!room) {
@@ -207,10 +196,22 @@ router.post('/message/save', async function (req, res, next) {
   } else if (!message) {
     res.json({ status: false });
   } else {
+    const thereIsRoom = await Messages.findOne({
+      where: {
+        room: room
+      }
+    });
+    if (!thereIsRoom) {
+      const savedRoom = await Rooms.create({
+        room,
+        userID,
+        recipientID,
+      });
+    }
     const recordedMessage = await Messages.create({
       room,
       userID,
-      message
+      message,
     });
     if (recordedMessage) {
       res.json({
@@ -224,9 +225,26 @@ router.post('/message/save', async function (req, res, next) {
 
 })
 
-router.post('chats/read', function (req,res,next) {
-  
+router.post('/chats/read', async function (req, res, next) {
+  const { roomID, recipientID } = req.body;
+  if (!roomID) {
+    res.json({ status: false });
+  } else if (!recipientID) {
+    res.json({ status: false });
+  } else {
+    const updateMessages = await sequelize.query(`update messages 
+    set isRead=true
+    where room="${roomID}" and userID="${recipientID}"
+  `);
+    console.log(roomID);
+    console.log(recipientID);
+    console.log(updateMessages);
+    if (updateMessages) {
+      res.json({ status: true });
+    } else {
+      res.json({ status: false });
+    }
+  }
 })
-
 
 module.exports = router;

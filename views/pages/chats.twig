@@ -77,16 +77,18 @@
 
     var socket = io();
     socket.on("connect", () => {
-        console.log( socket.id )
+        console.log( socket.id );
     });
     var quantityArray = [];
 
 	{% for row in data.messageList %}
         quantityArray.push({room:'{{row.room}}',quantity:0});
         socket.on('{{row.room}}', (msg) => {
+			console.log("geldi");
             var messagesQuantity = document.getElementById("{{row.room}}");
 			var lastMessage = document.getElementById("{{row.username}}");
 			let numb = messagesQuantity.childNodes.length;
+			console.log(numb)
 			if(numb != 0){
 				messagesQuantity.removeChild(messagesQuantity.firstElementChild);
 			}
@@ -107,19 +109,6 @@
         });
 
 	{% endfor %}
-
-function saveMessage(room,message){
-    $.ajax({
-    method: "POST",
-    url: "/message/save",
-    dataType: 'json',
-    data: {room, message},
-  }).done((res) => {
-        console.log(res.status);
-    }).fail((err)=>{
-        console.log(err.status);
-    });
-}
 
 socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
 
