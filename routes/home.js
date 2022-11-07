@@ -20,9 +20,8 @@ router.get('/chats', async function (req, res, next) {
   const userID = req.session.passport.user.id;
   var activePage = "chats";
 
+  //call up chat list
   var messageList = await chatList(userID);
-  console.log(messageList);
-
 
   var data = {
     activePage,
@@ -38,15 +37,16 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
   const { roomID, recipientID } = req.params;
   var activePage = "chats";
 
+  //Changing messages to read
   const updateMessages = await sequelize.query(`update messages 
       set isRead=true
       where room="${roomID}" and userID="${recipientID}"
   `)
-  console.log(updateMessages);
 
-
+  //call up chat list
   var messageList = await chatList(userID);
 
+  //Messages in chat
   const messages = await Messages.findAll({
     attributes: [
       'room',
@@ -62,16 +62,13 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
     ]
   });
 
-
-
-
   var data = {
     activePage,
     messageList,
     roomID,
     recipientID,
     userID,
-    messages
+    messages,
   };
 
   res.render('pages/chats', { title: "Chats", data });
@@ -81,10 +78,7 @@ router.get('/contacts', async function (req, res, next) {
 
   var activePage = "contacts";
   var userList = [];
-  var data = {
-    activePage,
-    userList
-  };
+
   try {
     const users = await Users.findAll({
       attributes: [
@@ -106,6 +100,10 @@ router.get('/contacts', async function (req, res, next) {
       users.forEach(element => {
         userList.push(element);
       });
+      var data = {
+        activePage,
+        userList
+      };
       res.render('pages/contacts', { title: "Contacts", data });
     } else {
       res.render('pages/contacts', { title: "Contacts", error: "Bilinmeyen bir hata oluştu" });
@@ -157,6 +155,8 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
   const recipientID = req.params.recipientID;
   const userID = req.session.passport.user.id;
   const room = uuidv4();
+
+  //Checking if such a room has been created before
   const searchRoom = await Rooms.findOne({
     where: {
       [Op.or]: [
@@ -196,18 +196,23 @@ router.post('/message/save', async function (req, res, next) {
   } else if (!message) {
     res.json({ status: false });
   } else {
+
+    //Creation of rooms when either party sends a message
+    //Checking if the room exists
     const thereIsRoom = await Messages.findOne({
       where: {
         room: room
       }
     });
     if (!thereIsRoom) {
+      //Creating the room
       const savedRoom = await Rooms.create({
         room,
         userID,
         recipientID,
       });
     }
+    //Saving the message
     const recordedMessage = await Messages.create({
       room,
       userID,
@@ -232,13 +237,13 @@ router.post('/chats/read', async function (req, res, next) {
   } else if (!recipientID) {
     res.json({ status: false });
   } else {
+
+    //Recording instant message read receipts
     const updateMessages = await sequelize.query(`update messages 
     set isRead=true
     where room="${roomID}" and userID="${recipientID}"
   `);
-    console.log(roomID);
-    console.log(recipientID);
-    console.log(updateMessages);
+
     if (updateMessages) {
       res.json({ status: true });
     } else {

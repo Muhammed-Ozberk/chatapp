@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 
 /** DB Models */
 const allModels = require("./../models");
-const { Op } = require("sequelize");
 const Users = allModels.Users;
 /** DB Models END */
 

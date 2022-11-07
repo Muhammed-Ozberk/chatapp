@@ -12,10 +12,9 @@ const { Op } = require("sequelize");
 const Users = allModels.Users;
 /** DB Models END */
 
-router.get('/login',authorize, (req, res, next) => {
+router.get('/login', authorize, (req, res, next) => {
     res.render('pages/login', { title: "Login" });
 });
-
 
 router.get('/login', (req, res, next) => {
     res.render('pages/login', { title: "Login" });
@@ -25,13 +24,13 @@ router.get('/register', (req, res, next) => {
     res.render('pages/register', { title: "Register" });
 });
 
-router.post('/login-post',authorize, (req, res, next) => {
+router.post('/login-post', authorize, (req, res, next) => {
 
     passport.authenticate('local', {
         successRedirect: '/chats',
         failureRedirect: '/login',
         failureMessage: true
-    })(req, res, next);    
+    })(req, res, next);
 });
 
 router.get('/logout', function (req, res, next) {
@@ -40,7 +39,6 @@ router.get('/logout', function (req, res, next) {
         res.redirect('/');
     });
 });
-
 
 router.post('/register-post', async (req, res, next) => {
 

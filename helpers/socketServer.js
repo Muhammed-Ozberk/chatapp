@@ -18,18 +18,14 @@ module.exports = {
             this._socket = io.attach(server);
             io.on("connection", (socket) => {
                 console.log("A user connected");
-                console.log(socket.id);
-                const count = io.engine.clientsCount;
-                console.log(count);
 
                 socket.on("sendMessage", (message, roomID) => {
-                    socket.broadcast.emit(roomID, message);
+                    socket.broadcast.emit(roomID, message);//Distributing the incoming message to everyone except the sender
                 });
 
                 socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
                 socket.on("disconnect", (reason) => {
-                    console.log("çıkış yapıldı");
-                    console.log(socket.id);
+                    console.log("user logged out");
                 });
             });
         }

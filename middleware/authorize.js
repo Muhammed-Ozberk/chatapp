@@ -1,3 +1,4 @@
+//session control on project pages
 const loggedIn = function (req, res, next) {
 
     if (req.isAuthenticated()) {
@@ -5,9 +6,10 @@ const loggedIn = function (req, res, next) {
     }
     else {
         res.redirect('/login');
-    } 
+    }
 }
 
+//session control on login and registration pages
 const notLoggedIn = function (req, res, next) {
 
     if (!req.isAuthenticated()) {
@@ -15,16 +17,7 @@ const notLoggedIn = function (req, res, next) {
     }
     else {
         res.redirect('/chats');
-    } 
+    }
 }
-
-// const notLoggedIn = function (req, res, next) {
-//     if (!req.isAuthenticated()) {
-//         return next();
-//     }
-//     else {
-//         res.redirect('/yonetim');
-//     }
-// }
 
 module.exports = { loggedIn, notLoggedIn };

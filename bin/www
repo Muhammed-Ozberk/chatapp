@@ -45,7 +45,7 @@ function startServer() {
   }
 }
 
-
+//database connection
 sequelize.authenticate().then(() => {
   console.log('DB Connection has been established successfully.');
   sequelize.migrate().then(migrations => {

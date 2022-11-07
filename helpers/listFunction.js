@@ -1,9 +1,7 @@
 /** DB Models */
 const allModels = require("./../models");
 const { Op } = require("sequelize");
-const Users = allModels.Users;
 const Rooms = allModels.Rooms;
-const Messages = allModels.Messages;
 const sequelize = require('../models/index').sequelize;
 /** DB Models END */
 
@@ -12,6 +10,7 @@ module.exports = async (userID) => {
     const whereParam = [];
     const messageList = [];
 
+    //the logged in user list of created chat rooms
     const roomList = await Rooms.findAll({
         attributes: [
             'room',
@@ -23,28 +22,30 @@ module.exports = async (userID) => {
             ]
         }
     });
-    console.log(roomList);
-    if (roomList.length !=0) {
+
+    if (roomList.length != 0) { //null error fix
+
+        //Creating the query parameter required to fetch the message list
         roomList.forEach(element => {
             whereParam.push(`'${element.room}'`)
         });
-    
-        const messages = await sequelize.query(`select * from messages where room in (${whereParam}) order by id desc`)
-    
+
+        //Messages from chat rooms brought
+        const messages = await sequelize.query(`select * from messages where room in (${whereParam}) order by id desc`);
+
+
+        //User information of the brought chat rooms
         const firstList = await sequelize.query(`select users.userID,room,username from users 
           inner join rooms  on
           users.userID = rooms.recipientID
           where rooms.userID = '${userID}'`);
-    
+
         const secondList = await sequelize.query(`select users.userID,room,username from users 
           inner join rooms  on
           users.userID = rooms.userID
           where rooms.recipientID = '${userID}'`);
-        console.log(messages);
-    
-        console.log(firstList);
-        console.log(secondList);
-    
+
+        //Creating the chat list by combining the messages and user information with the rooms
         for (let index = 0; index < firstList[0].length; index++) {
             var item = 0;
             var message = "";
@@ -80,7 +81,7 @@ module.exports = async (userID) => {
             }
             messageList.push(data);
         }
-    
+
         for (let index = 0; index < secondList[0].length; index++) {
             var item = 0;
             var message = "";
@@ -117,5 +118,6 @@ module.exports = async (userID) => {
             messageList.push(data);
         }
     }
+    //Created chat list
     return messageList;
 }

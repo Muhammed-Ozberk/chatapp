@@ -26,10 +26,12 @@
 				<ul
 					class="list-unstyled chat-list chat-user-list">
 
+					{# Creating the chat list #}
 					{% for row in data.messageList %}
 
 						<li class="unread">
-							<a href="/chats/{{row.room}}/{{row.userID}}">
+								{# The solution to the error in the mobile version in responsive design #}
+								<a href={% if data.recipientID == row.userID %}"#"{% else %}"/chats/{{row.room}}/{{row.userID}}"{% endif %}>
 									<div class="d-flex">
 										<div class="chat-user-img align-self-center me-3 ms-0">
 											<div class="avatar-xs">
@@ -77,18 +79,18 @@
 
     var socket = io();
     socket.on("connect", () => {
-        console.log( socket.id );
+        console.log( "connected" );
     });
     var quantityArray = [];
 
+	{# Pressing the number of notifications on the screen instantly #}
 	{% for row in data.messageList %}
+
         quantityArray.push({room:'{{row.room}}',quantity:0});
         socket.on('{{row.room}}', (msg) => {
-			console.log("geldi");
             var messagesQuantity = document.getElementById("{{row.room}}");
 			var lastMessage = document.getElementById("{{row.username}}");
 			let numb = messagesQuantity.childNodes.length;
-			console.log(numb)
 			if(numb != 0){
 				messagesQuantity.removeChild(messagesQuantity.firstElementChild);
 			}
@@ -110,12 +112,12 @@
 
 	{% endfor %}
 
-socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
+	socket.on("connect_error", (err) => { console.log(`connect_error due to ${err.message}`); });
 
-socket.on( "disconnect", () => {
-    console.log("çıkış yapıldı")
-    console.log( socket.id );
-});
+	socket.on( "disconnect", () => {
+    	console.log("çıkış yapıldı")
+    	console.log( socket.id );
+	});
 	</script>
 
 {% endblock %}
