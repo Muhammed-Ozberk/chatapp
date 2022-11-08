@@ -13,11 +13,14 @@ const Users = allModels.Users;
 /** DB Models END */
 
 router.get('/login', authorize, (req, res, next) => {
-    res.render('pages/login', { title: "Login" });
-});
 
-router.get('/login', (req, res, next) => {
-    res.render('pages/login', { title: "Login" });
+    var error = null;
+    if (req.session.messages != "undefined") {
+        error = req.session.messages;
+    }
+    console.log(error);
+
+    res.render('pages/login', { title: "Login", error });
 });
 
 router.get('/register', (req, res, next) => {
@@ -56,7 +59,7 @@ router.post('/register-post', async (req, res, next) => {
         try {
             const user = await Users.findOne({
                 where: {
-                    [Op.or]: [{ email: email }, { username: username }]
+                    username: username
                 }
             });
 
@@ -72,22 +75,13 @@ router.post('/register-post', async (req, res, next) => {
                     res.redirect('/login');
                 } else {
                     return res.render(viewPath, {
-                        status: false,
-                        error: "Kullanıcı kaydedilirken bir hata oluştu"
+                        error: ["Kullanıcı kaydedilirken bir hata oluştu"]
                     });
                 }
             } else {
-                if (user.userName == username) {
-                    return res.render(viewPath, {
-                        status: false,
-                        error: "Bu kullanıcı adı başka bir hesap tarafından kullanılmakta"
-                    });
-                } else {
-                    return res.render(viewPath, {
-                        status: false,
-                        error: "Bu email değeri başka bir hesap tarafından kullanılmakta"
-                    });
-                }
+                return res.render(viewPath, {
+                    error: ["Bu kullanıcı adı başka bir hesap tarafından kullanılmakta"]
+                });
             }
         } catch (error) {
             console.log(error);

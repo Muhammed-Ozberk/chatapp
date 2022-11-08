@@ -17,67 +17,106 @@ const sequelize = require('../models/index').sequelize;
 
 router.get('/chats', async function (req, res, next) {
 
-  const userID = req.session.passport.user.id;
+  var user = req.session.passport.user;
+  var username = user.username;
+  const userID = user.id;
   var activePage = "chats";
+  var userAvatar = null;
 
-  //call up chat list
-  var messageList = await chatList(userID);
+  try {
 
-  var data = {
-    activePage,
-    messageList,
-  };
+    userAvatar = username.slice(0, 1).toUpperCase();
 
-  res.render('pages/chats', { title: "Chats", data });
+    //call up chat list
+    var messageList = await chatList(userID);
+
+    var data = {
+      activePage,
+      messageList,
+      userAvatar
+    };
+
+    res.render('pages/chats', { title: "Chats", data });
+  } catch (error) {
+    res.render('error', { message: error, error: { status: false, stack: error } });
+  }
 });
 
 router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
 
-  const userID = req.session.passport.user.id;
+  var user = req.session.passport.user;
+  var username = user.username;
+  const userID = user.id;
   const { roomID, recipientID } = req.params;
+  var recipientName = null;
+  var recipientAvatar = null;
+  var userAvatar = null;
+
   var activePage = "chats";
+  try {
+    const recipient = await Users.findOne({
+      where: {
+        userID: recipientID
+      }
+    })
+    recipientName = recipient.username;
+    recipientAvatar = recipientName.slice(0, 1).toUpperCase();
+    userAvatar = username.slice(0, 1).toUpperCase();
 
-  //Changing messages to read
-  const updateMessages = await sequelize.query(`update messages 
-      set isRead=true
-      where room="${roomID}" and userID="${recipientID}"
-  `)
 
-  //call up chat list
-  var messageList = await chatList(userID);
+    //Changing messages to read
+    const updateMessages = await sequelize.query(`update messages 
+        set isRead=true
+        where room="${roomID}" and userID="${recipientID}"
+    `)
 
-  //Messages in chat
-  const messages = await Messages.findAll({
-    attributes: [
-      'room',
-      'userID',
-      'message',
-      'createdAt'
-    ],
-    where: {
-      room: roomID
-    },
-    order: [
-      ['id', 'ASC'],
-    ]
-  });
+    //call up chat list
+    var messageList = await chatList(userID);
 
-  var data = {
-    activePage,
-    messageList,
-    roomID,
-    recipientID,
-    userID,
-    messages,
-  };
+    //Messages in chat
+    const messages = await Messages.findAll({
+      attributes: [
+        'room',
+        'userID',
+        'message',
+        'createdAt'
+      ],
+      where: {
+        room: roomID
+      },
+      order: [
+        ['id', 'ASC'],
+      ]
+    });
 
-  res.render('pages/chats', { title: "Chats", data });
+    var data = {
+      activePage,
+      messageList,
+      roomID,
+      recipientID,
+      userID,
+      messages,
+      username,
+      recipientName,
+      recipientAvatar,
+      userAvatar
+    };
+
+    res.render('pages/chats', { title: "Chats", data });
+  } catch (error) {
+    res.render('error', { message: error, error: { status: false, stack: error } });
+  }
 });
 
 router.get('/contacts', async function (req, res, next) {
 
+  var user = req.session.passport.user;
+  var username = user.username;
   var activePage = "contacts";
   var userList = [];
+  var userAvatar = null;
+
+  userAvatar = username.slice(0, 1).toUpperCase();
 
   try {
     const users = await Users.findAll({
@@ -102,7 +141,8 @@ router.get('/contacts', async function (req, res, next) {
       });
       var data = {
         activePage,
-        userList
+        userList,
+        userAvatar
       };
       res.render('pages/contacts', { title: "Contacts", data });
     } else {
@@ -112,15 +152,20 @@ router.get('/contacts', async function (req, res, next) {
   } catch (error) {
     res.render('pages/contacts', { title: "Contacts", error: "Bilinmeyen bir hata oluştu" });
   }
-
 });
 
 router.get('/groups', function (req, res, next) {
 
+  var user = req.session.passport.user;
+  var username = user.username;
   var activePage = "groups";
+  var userAvatar = null;
+
+  userAvatar = username.slice(0, 1).toUpperCase();
 
   var data = {
     activePage,
+    userAvatar
   };
   res.render('pages/groups', { title: "Groups", data });
 });
@@ -131,11 +176,17 @@ router.get('/profile', function (req, res, next) {
   var username = user.username;
   var email = user.email;
   var activePage = "profile";
+  var userAvatar = null;
+
+
+  userAvatar = username.slice(0, 1).toUpperCase();
+
 
   var data = {
     activePage,
     username,
-    email
+    email,
+    userAvatar
   };
 
   res.render('pages/profile', { title: "Profile", data });
@@ -143,10 +194,17 @@ router.get('/profile', function (req, res, next) {
 
 router.get('/settings', function (req, res, next) {
 
+  var user = req.session.passport.user;
+  var username = user.username;
   var activePage = "settings";
+  var userAvatar = null;
+
+  userAvatar = username.slice(0, 1).toUpperCase();
+
 
   var data = {
     activePage,
+    userAvatar
   };
   res.render('pages/settings', { title: "Settings", data });
 });
@@ -156,31 +214,35 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
   const userID = req.session.passport.user.id;
   const room = uuidv4();
 
-  //Checking if such a room has been created before
-  const searchRoom = await Rooms.findOne({
-    where: {
-      [Op.or]: [
-        {
-          [Op.and]: [
-            { userID: userID },
-            { recipientID: recipientID }
-          ]
-        },
-        {
-          [Op.and]: [
-            { userID: recipientID },
-            { recipientID: userID }
-          ]
-        }
-      ]
-    }
-  });
+  try {
+    //Checking if such a room has been created before
+    const searchRoom = await Rooms.findOne({
+      where: {
+        [Op.or]: [
+          {
+            [Op.and]: [
+              { userID: userID },
+              { recipientID: recipientID }
+            ]
+          },
+          {
+            [Op.and]: [
+              { userID: recipientID },
+              { recipientID: userID }
+            ]
+          }
+        ]
+      }
+    });
 
-  if (!searchRoom) {
-    res.redirect(`/chats/${room}/${recipientID}`);
-  } else {
-    console.log(searchRoom);
-    res.redirect(`/chats/${searchRoom.room}/${recipientID}`);
+    if (!searchRoom) {
+      res.redirect(`/chats/${room}/${recipientID}`);
+    } else {
+      console.log(searchRoom);
+      res.redirect(`/chats/${searchRoom.room}/${recipientID}`);
+    }
+  } catch (error) {
+    res.render('error', { message: error, error: { status: false, stack: error } });
   }
 
 });

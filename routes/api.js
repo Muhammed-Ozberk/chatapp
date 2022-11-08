@@ -19,38 +19,40 @@ router.post('/message/save', async function (req, res, next) {
     } else if (!message) {
         res.json({ status: false });
     } else {
-
-        //Creation of rooms when either party sends a message
-        //Checking if the room exists
-        const thereIsRoom = await Messages.findOne({
-            where: {
-                room: room
+        try {
+            //Creation of rooms when either party sends a message
+            //Checking if the room exists
+            const thereIsRoom = await Messages.findOne({
+                where: {
+                    room: room
+                }
+            });
+            if (!thereIsRoom) {
+                //Creating the room
+                const savedRoom = await Rooms.create({
+                    room,
+                    userID,
+                    recipientID,
+                });
             }
-        });
-        if (!thereIsRoom) {
-            //Creating the room
-            const savedRoom = await Rooms.create({
+            //Saving the message
+            const recordedMessage = await Messages.create({
                 room,
                 userID,
-                recipientID,
+                message,
             });
-        }
-        //Saving the message
-        const recordedMessage = await Messages.create({
-            room,
-            userID,
-            message,
-        });
-        if (recordedMessage) {
-            res.json({
-                status: true,
-                data: recordedMessage
-            })
-        } else {
-            res.json({ status: false });
+            if (recordedMessage) {
+                res.json({
+                    status: true,
+                    data: recordedMessage
+                })
+            } else {
+                res.json({ status: false });
+            }
+        } catch (error) {
+            res.render('error', { message: error, error: { status: false, stack: error } });
         }
     }
-
 });
 
 router.post('/chats/read', async function (req, res, next) {
@@ -60,17 +62,20 @@ router.post('/chats/read', async function (req, res, next) {
     } else if (!recipientID) {
         res.json({ status: false });
     } else {
+        try {
+            //Recording instant message read receipts
+            const updateMessages = await sequelize.query(`update messages 
+            set isRead=true
+            where room="${roomID}" and userID="${recipientID}"
+          `);
 
-        //Recording instant message read receipts
-        const updateMessages = await sequelize.query(`update messages 
-      set isRead=true
-      where room="${roomID}" and userID="${recipientID}"
-    `);
-
-        if (updateMessages) {
-            res.json({ status: true });
-        } else {
-            res.json({ status: false });
+            if (updateMessages) {
+                res.json({ status: true });
+            } else {
+                res.json({ status: false });
+            }
+        } catch (error) {
+            res.render('error', { message: error, error: { status: false, stack: error } });
         }
     }
 });

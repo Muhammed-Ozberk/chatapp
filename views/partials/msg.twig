@@ -1,7 +1,7 @@
 
-{% if status == false %}
+{% if error %}
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong> {{error}}</strong> 
+        <strong> {{error[0]}}</strong> 
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="padding:1.25em"></button>
     </div>
 {% endif %}

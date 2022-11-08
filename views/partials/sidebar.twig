@@ -68,9 +68,13 @@
                         </li>
 
                         <li class="nav-item btn-group dropup profile-user-dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="/assets/images/users/avatar-1.jpg" alt="" class="profile-user rounded-circle">
-                            </a>
+                            <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="avatar-xs profile-user rounded-circle" >
+                                        <span class="avatar-title rounded-circle bg-soft-primary text-primary ">
+                                            {{data.userAvatar}}
+                                        </span>
+                                    </div>
+                                                                </a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Profile <i class="ri-profile-line float-end text-muted"></i></a>
                                 <a class="dropdown-item" href="#">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>

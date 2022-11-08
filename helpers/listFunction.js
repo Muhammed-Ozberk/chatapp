@@ -33,7 +33,6 @@ module.exports = async (userID) => {
         //Messages from chat rooms brought
         const messages = await sequelize.query(`select * from messages where room in (${whereParam}) order by id desc`);
 
-
         //User information of the brought chat rooms
         const firstList = await sequelize.query(`select users.userID,room,username from users 
           inner join rooms  on
