@@ -27,7 +27,7 @@
 					class="list-unstyled chat-list chat-user-list">
 
 					{# Creating the chat list #}
-					{% for row in data.messageList %}
+					{% for row in data._chatList %}
 
 						<li class="unread">
 								{# The solution to the error in the mobile version in responsive design #}
@@ -84,7 +84,7 @@
     var quantityArray = [];
 
 	{# Pressing the number of notifications on the screen instantly #}
-	{% for row in data.messageList %}
+	{% for row in data._chatList %}
 
         quantityArray.push({room:'{{row.room}}',quantity:0});
         socket.on('{{row.room}}', (msg) => {

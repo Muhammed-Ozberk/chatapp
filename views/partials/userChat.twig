@@ -570,7 +570,7 @@
         }
             var quantityArray = [];
         
-        	{% for row in data.messageList %}
+        	{% for row in data._chatList %}
                 {% if data.roomID != row.room %}
                 quantityArray.push({room:'{{row.room}}',quantity:0});
                 socket.on('{{row.room}}', (msg) => {

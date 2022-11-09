@@ -14,16 +14,14 @@ const Messages = allModels.Messages;
 const sequelize = require('../models/index').sequelize;
 /** DB Models END */
 
-var themeMode = null;
 
 
 router.get('/chats', async function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
-  if (themeMode == null) {
-    themeMode = user.themeMode;
-  }
+  var themeMode = user.themeMode;
+  console.log(themeMode);
   const userID = user.id;
   var activePage = "chats";
   var userAvatar = null;
@@ -33,11 +31,11 @@ router.get('/chats', async function (req, res, next) {
     userAvatar = username.slice(0, 1).toUpperCase();
 
     //call up chat list
-    var messageList = await chatList(userID);
+    var _chatList = await chatList(userID);
 
     var data = {
       activePage,
-      messageList,
+      _chatList,
       userAvatar,
       themeMode
     };
@@ -52,6 +50,7 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
+  var themeMode = user.themeMode;
   const userID = user.id;
   const { roomID, recipientID } = req.params;
   var recipientName = null;
@@ -76,7 +75,7 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
     `)
 
     //call up chat list
-    var messageList = await chatList(userID);
+    var _chatList = await chatList(userID);
 
     //Messages in chat
     const messages = await sequelize.query(`select
@@ -88,7 +87,7 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
 
     var data = {
       activePage,
-      messageList,
+      _chatList,
       roomID,
       recipientID,
       userID,
@@ -110,6 +109,7 @@ router.get('/contacts', async function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
+  var themeMode = user.themeMode;
   var activePage = "contacts";
   var userList = [];
   var userAvatar = null;
@@ -157,6 +157,7 @@ router.get('/groups', function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
+  var themeMode = user.themeMode;
   var activePage = "groups";
   var userAvatar = null;
 
@@ -174,6 +175,7 @@ router.get('/profile', function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
+  var themeMode = user.themeMode;
   var email = user.email;
   var activePage = "profile";
   var userAvatar = null;
@@ -197,6 +199,7 @@ router.get('/settings', function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
+  var themeMode = user.themeMode;
   var activePage = "settings";
   var userAvatar = null;
 
@@ -253,6 +256,7 @@ router.get('/theme-mode', async function (req, res, next) {
 
   var user = req.session.passport.user;
   var userID = user.id;
+  var themeMode = user.themeMode;
   console.log(user);
   var data = null;
   if (themeMode == "light") {
@@ -262,7 +266,7 @@ router.get('/theme-mode', async function (req, res, next) {
   }
   try {
     if (data != null) {
-      themeMode = data;
+      user.themeMode = data;
       const updateMode = await sequelize.query(`update users 
       set themeMode="${data}" 
       where userID="${userID}"
