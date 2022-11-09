@@ -83,7 +83,7 @@
                             <ul id="messagesList" class="list-unstyled mb-0">
                             
             {% if data.messages %} 
-                {% for row in data.messages %}
+                {% for row in data.messages[0] %}
                     {% if row.userID == data.userID %} 
                         <li class="right">
                             <div class="conversation-list">
@@ -100,7 +100,7 @@
                                         <p class="mb-0">
                                             {{row.message}}
                                         </p>
-                                        <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:02</span></p>
+                                        <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">{{row.sendDate}}</span></p>
                                     </div>
              
                                 <div class="dropdown align-self-start">
@@ -135,7 +135,7 @@
                       <p class="mb-0">
                        {{row.message}}
                       </p>
-                      <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
+                      <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">{{row.sendDate}}</span></p>
                   </div>
                   <div class="dropdown align-self-start">
                       <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -429,7 +429,7 @@
 
 {% block javascript %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> #}
 	<script src="/socket.io/socket.io.js"></script>
 
 	<script>
@@ -448,6 +448,7 @@
 
             let item = document.createElement('li');
             let att = document.createAttribute("class");
+            var localTime = new Date().toLocaleTimeString();
 
             att.value = "right";
             item.setAttributeNode(att);
@@ -455,7 +456,11 @@
             item.innerHTML+=`
                 <div class="conversation-list">
                   <div class="chat-avatar">
-                      <img src="/assets/images/users/avatar-1.jpg" alt="">
+                        <div class="avatar-xs">
+                            <span class="avatar-title rounded-circle bg-soft-primary text-primary ">
+                                {{data.userAvatar}}
+                            </span>
+                        </div>
                   </div>
                   <div class="user-chat-content">
                       <div class="ctext-wrap">
@@ -463,7 +468,7 @@
                               <p class="mb-0">
                                   ${messageInput.value}
                               </p>
-                              <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:02</span></p>
+                              <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">${localTime}</span></p>
                           </div>
                               
                           <div class="dropdown align-self-start">
@@ -479,7 +484,7 @@
                           </div>
                       </div>
                       
-                      <div class="conversation-name">Patricia Smith</div>
+                      <div class="conversation-name">{{data.username}}</div>
                   </div>
             </div>`
 
@@ -497,20 +502,25 @@
         socket.on('{{data.roomID}}', (msg) => {
         
           let item = document.createElement('li');
+          var localTime = new Date().toLocaleTimeString();
         
           item.innerHTML="";
           item.innerHTML+=`
               <div class="conversation-list">
                   <div class="chat-avatar">
-                      <img src="/assets/images/users/avatar-4.jpg" alt="">
-                  </div>
+                    <div class="avatar-xs">
+                        <span class="avatar-title rounded-circle bg-soft-primary text-primary ">
+                            {{data.recipientAvatar}}
+                        </span>
+                    </div>
+                </div>
                   <div class="user-chat-content">
                       <div class="ctext-wrap">
                           <div class="ctext-wrap-content">
                               <p class="mb-0">
                                 ${ msg }
                               </p>
-                              <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
+                              <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">${localTime}</span></p>
                           </div>
                           <div class="dropdown align-self-start">
                               <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -524,7 +534,7 @@
                               </div>
                           </div>
                       </div>
-                      <div class="conversation-name">Doris Brown</div>
+                      <div class="conversation-name">{{data.recipientName}}</div>
                   </div>
               </div>`
             messagesList.appendChild(item);

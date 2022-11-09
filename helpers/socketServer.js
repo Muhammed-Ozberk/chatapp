@@ -10,8 +10,6 @@ const io = require('socket.io')(http, {
 module.exports = {
     _socket: null,
 
-    _clints: [],
-
     attach: function (server) {
 
         if (this._socket == null) {

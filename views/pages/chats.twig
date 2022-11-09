@@ -36,7 +36,7 @@
 										<div class="chat-user-img align-self-center me-3 ms-0">
 											<div class="avatar-xs">
 												<span class="avatar-title rounded-circle bg-soft-primary text-primary">
-													G
+													{{row.userAvatar}}
 												</span>
 											</div>
 										</div>
@@ -72,7 +72,7 @@
 
 {% block javascript %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> #}
 	<script src="/socket.io/socket.io.js"></script>
 
 	<script>

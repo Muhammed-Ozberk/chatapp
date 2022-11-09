@@ -14,11 +14,16 @@ const Messages = allModels.Messages;
 const sequelize = require('../models/index').sequelize;
 /** DB Models END */
 
+var themeMode = null;
+
 
 router.get('/chats', async function (req, res, next) {
 
   var user = req.session.passport.user;
   var username = user.username;
+  if (themeMode == null) {
+    themeMode = user.themeMode;
+  }
   const userID = user.id;
   var activePage = "chats";
   var userAvatar = null;
@@ -33,7 +38,8 @@ router.get('/chats', async function (req, res, next) {
     var data = {
       activePage,
       messageList,
-      userAvatar
+      userAvatar,
+      themeMode
     };
 
     res.render('pages/chats', { title: "Chats", data });
@@ -63,7 +69,6 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
     recipientAvatar = recipientName.slice(0, 1).toUpperCase();
     userAvatar = username.slice(0, 1).toUpperCase();
 
-
     //Changing messages to read
     const updateMessages = await sequelize.query(`update messages 
         set isRead=true
@@ -74,20 +79,12 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
     var messageList = await chatList(userID);
 
     //Messages in chat
-    const messages = await Messages.findAll({
-      attributes: [
-        'room',
-        'userID',
-        'message',
-        'createdAt'
-      ],
-      where: {
-        room: roomID
-      },
-      order: [
-        ['id', 'ASC'],
-      ]
-    });
+    const messages = await sequelize.query(`select
+      room,userID,message,maketime(hour(createdAt),minute(createdAt),second(createdAt)) as sendDate from messages 
+      where room="${roomID}"
+      order by id asc
+    `);
+    console.log(messages);
 
     var data = {
       activePage,
@@ -99,7 +96,8 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
       username,
       recipientName,
       recipientAvatar,
-      userAvatar
+      userAvatar,
+      themeMode
     };
 
     res.render('pages/chats', { title: "Chats", data });
@@ -142,7 +140,8 @@ router.get('/contacts', async function (req, res, next) {
       var data = {
         activePage,
         userList,
-        userAvatar
+        userAvatar,
+        themeMode
       };
       res.render('pages/contacts', { title: "Contacts", data });
     } else {
@@ -165,7 +164,8 @@ router.get('/groups', function (req, res, next) {
 
   var data = {
     activePage,
-    userAvatar
+    userAvatar,
+    themeMode
   };
   res.render('pages/groups', { title: "Groups", data });
 });
@@ -186,7 +186,8 @@ router.get('/profile', function (req, res, next) {
     activePage,
     username,
     email,
-    userAvatar
+    userAvatar,
+    themeMode
   };
 
   res.render('pages/profile', { title: "Profile", data });
@@ -204,7 +205,8 @@ router.get('/settings', function (req, res, next) {
 
   var data = {
     activePage,
-    userAvatar
+    userAvatar,
+    themeMode
   };
   res.render('pages/settings', { title: "Settings", data });
 });
@@ -246,6 +248,36 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
   }
 
 });
+
+router.get('/theme-mode', async function (req, res, next) {
+
+  var user = req.session.passport.user;
+  var userID = user.id;
+  console.log(user);
+  var data = null;
+  if (themeMode == "light") {
+    data = "dark";
+  } else {
+    data = "light";
+  }
+  try {
+    if (data != null) {
+      themeMode = data;
+      const updateMode = await sequelize.query(`update users 
+      set themeMode="${data}" 
+      where userID="${userID}"
+    `);
+      if (updateMode) {
+        res.redirect("/chats");
+      } else {
+        res.redirect("/chats");
+      }
+    }
+  } catch (error) {
+    res.render('error', { message: error, error: { status: false, stack: error } });
+  }
+
+})
 
 
 module.exports = router;
