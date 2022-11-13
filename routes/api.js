@@ -5,7 +5,9 @@ var router = express.Router();
 const allModels = require("./../models");
 const Rooms = allModels.Rooms;
 const Messages = allModels.Messages;
+const Users = allModels.Users;
 const sequelize = require('../models/index').sequelize;
+const { Op } = require("sequelize");
 /** DB Models END */
 
 router.post('/message/save', async function (req, res, next) {
@@ -79,5 +81,41 @@ router.post('/chats/read', async function (req, res, next) {
         }
     }
 });
+
+router.get('/bring-contacts/:personToSearch', async function (req, res, next) {
+    var { personToSearch } = req.params;
+    let combining = /[\u0300-\u036F]/g;
+    if (!personToSearch) {
+        res.json({ status: false });
+    } else {
+        personToSearch = personToSearch.normalize('NFKD').replace(combining, '');
+        try {
+
+            const searchList = await Users.findAll({
+                attributes: [
+                    'userID',
+                    'username',
+                    'email',
+                ],
+                where: {
+                    username: {
+                        [Op.substring]: personToSearch,
+                        [Op.ne]: req.session.passport.user.username
+                    }
+                }
+            });
+            if (searchList) {
+                res.json({ persons: searchList });
+            } else {
+                res.json({ status: false });
+            }
+        } catch (error) {
+            res.render('error', { message: error, error: { status: false, stack: error } });
+        }
+    }
+
+});
+
+
 
 module.exports = router;

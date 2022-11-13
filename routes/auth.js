@@ -18,7 +18,6 @@ router.get('/login', authorize, (req, res, next) => {
     if (req.session.messages != "undefined") {
         error = req.session.messages;
     }
-    console.log(error);
 
     res.render('pages/login', { title: "Login", error });
 });
@@ -84,7 +83,7 @@ router.post('/register-post', async (req, res, next) => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            res.render('error', { message: error, error: { status: false, stack: error } });
         }
     }
 });

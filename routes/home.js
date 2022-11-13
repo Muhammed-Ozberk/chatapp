@@ -21,7 +21,6 @@ router.get('/chats', async function (req, res, next) {
   var user = req.session.passport.user;
   var username = user.username;
   var themeMode = user.themeMode;
-  console.log(themeMode);
   const userID = user.id;
   var activePage = "chats";
   var userAvatar = null;
@@ -83,7 +82,6 @@ router.get('/chats/:roomID/:recipientID', async function (req, res, next) {
       where room="${roomID}"
       order by id asc
     `);
-    console.log(messages);
 
     var data = {
       activePage,
@@ -125,7 +123,7 @@ router.get('/contacts', async function (req, res, next) {
       ],
       where: {
         username: {
-          [Op.ne]: req.session.passport.user.username
+          [Op.ne]: username
         }
       },
       order: [
@@ -243,7 +241,6 @@ router.get('/contacts/:recipientID', async function (req, res, next) {
     if (!searchRoom) {
       res.redirect(`/chats/${room}/${recipientID}`);
     } else {
-      console.log(searchRoom);
       res.redirect(`/chats/${searchRoom.room}/${recipientID}`);
     }
   } catch (error) {
@@ -257,7 +254,6 @@ router.get('/theme-mode', async function (req, res, next) {
   var user = req.session.passport.user;
   var userID = user.id;
   var themeMode = user.themeMode;
-  console.log(user);
   var data = null;
   if (themeMode == "light") {
     data = "dark";
@@ -281,7 +277,12 @@ router.get('/theme-mode', async function (req, res, next) {
     res.render('error', { message: error, error: { status: false, stack: error } });
   }
 
-})
+});
+
+// router.get('/add-to-friends/:friendsID', async function (req, res, next) {
+//   const { friendsID } = req.params;
+
+// })
 
 
 module.exports = router;
