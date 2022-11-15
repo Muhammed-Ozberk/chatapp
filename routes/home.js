@@ -148,7 +148,6 @@ router.get('/contacts', async function (req, res, next) {
           isFriend: false
         }
       });
-      console.log(friendRequests);
       var data = {
         activePage,
         userList,
@@ -324,7 +323,31 @@ router.get('/add-to-friends/:friendID', async function (req, res, next) {
   }
 })
 
+router.get('/accept-the-request/:userID', async function (req, res, next) {
+  const { userID } = req.params;
+  var user = req.session.passport.user;
 
+  try {
+    const friendRequest = await Friends.findOne({
+      where: {
+        userID: userID,
+        friendID: user.id,
+        isFriend: false
+      }
+    });
+    if (friendRequest) {
+      const acceptedRequest = await friendRequest.update({
+        isFriend:true
+      })
+      res.redirect('/contacts')
+    } else {
+      console.log("bulunamadı");
+      res.redirect('/contacts')
+    }
+  } catch (error) {
+    res.render('error', { message: error, error: { status: false, stack: error } });
+  }
+});
 
 
 module.exports = router;
