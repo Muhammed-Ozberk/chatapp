@@ -12,6 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      userName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       friendID: {
         type: Sequelize.STRING,
         allowNull: false,

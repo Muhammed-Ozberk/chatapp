@@ -10,7 +10,8 @@ const allModels = require("./../models");
 const { Op } = require("sequelize");
 const Users = allModels.Users;
 const Rooms = allModels.Rooms;
-const Messages = allModels.Messages;
+const FriendRequests = allModels.FriendRequests;
+const Friends = allModels.Friends;
 const sequelize = require('../models/index').sequelize;
 /** DB Models END */
 
@@ -131,15 +132,29 @@ router.get('/contacts', async function (req, res, next) {
       ]
     });
 
+
     if (users) {
       users.forEach(element => {
         userList.push(element);
       });
+
+      const friendRequests = await Friends.findAll({
+        attributes: [
+          'userID',
+          'userName',
+        ],
+        where: {
+          friendID: user.id,
+          isFriend: false
+        }
+      });
+      console.log(friendRequests);
       var data = {
         activePage,
         userList,
         userAvatar,
-        themeMode
+        themeMode,
+        friendRequests
       };
       res.render('pages/contacts', { title: "Contacts", data });
     } else {
@@ -279,10 +294,37 @@ router.get('/theme-mode', async function (req, res, next) {
 
 });
 
-// router.get('/add-to-friends/:friendsID', async function (req, res, next) {
-//   const { friendsID } = req.params;
+router.get('/add-to-friends/:friendID', async function (req, res, next) {
+  const { friendID } = req.params;
+  var user = req.session.passport.user;
 
-// })
+  try {
+    const friendRequest = await Friends.findOne({
+      where: {
+        userID: user.id,
+        friendID: friendID
+      }
+    })
+    if (friendRequest) {
+      res.redirect('/contacts');
+    } else {
+      const savedFriend = await Friends.create({
+        userID: user.id,
+        userName: user.username,
+        friendID: friendID,
+      });
+      if (savedFriend) {
+        res.redirect('/contacts');
+      } else {
+        console.log("hata var");
+      }
+    }
+  } catch (error) {
+    res.render('error', { message: error, error: { status: false, stack: error } });
+  }
+})
+
+
 
 
 module.exports = router;

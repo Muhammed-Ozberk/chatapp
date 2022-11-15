@@ -57,35 +57,26 @@
                                                     Arkadaşlık İstekler
                                                 </div>
                                                 <ul class="list-unstyled contact-list">
+                                                {% for row in data.friendRequests %}
                                                     <li>
                                                         <div class="form-check">
                                                             <h5 class="text-truncate font-size-15 mb-1">
-                                                                Ali
+                                                                {{row.userName}}
                                                             <a href="#" style="right: 85px; position: absolute; background-color: #6159cb; padding: 5px;
                                                             border-radius: 5px; color: white;font-size: small;">Kabul Et</a>
                                                             <a href="#" style="right: 25px; position: absolute; background-color: #d82550; padding: 5px;
                                                             border-radius: 5px; color: white;font-size: small;">Reddet</a> 
-								                            </h5>
+								                                            </h5>
                                                         </div>
                                                     </li>
+                                                {% endfor %}
                                                     <li>
-                                                        <div class="form-check">
-                                                            <h5 class="text-truncate font-size-15 mb-1">
-                                                                veli
-                                                            <a href="#" style="right: 85px; position: absolute; background-color: #6159cb; padding: 5px;
-                                                            border-radius: 5px; color: white;font-size: small;">Kabul Et</a>
-                                                            <a href="#" style="right: 25px; position: absolute; background-color: #d82550; padding: 5px;
-                                                            border-radius: 5px; color: white;font-size: small;">Reddet</a>                                                            
-								                            </h5>
-                                                        </div>
-                                                    </li>
-                                                                                                        <li>
                                                         <div class="form-check">
                                                             <h5 class="text-truncate font-size-15 mb-1">
                                                                 veli
                                                             <a href="#" style="right: 25px; position: absolute; background-color: #5a6152; padding: 5px;
                                                             border-radius: 5px; color: white;font-size: small;">Kabul Edildi</a>                                                       
-								                            </h5>
+								                                            </h5>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -278,7 +269,7 @@
                             <div class="form-check">
                                 <h5 class="text-truncate font-size-15 mb-1">
 									${element.username}
-                                    <a href="#" style="right: 25px; position: absolute; background-color: #6159cb; padding: 5px;
+                                    <a href="/add-to-friends/${element.userID}" style="right: 25px; position: absolute; background-color: #6159cb; padding: 5px;
                                         border-radius: 5px; color: white;font-size: small;">Arkadaş ekle</a>
 								</h5>
                             </div>`

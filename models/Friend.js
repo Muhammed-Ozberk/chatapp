@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
                 autoIncrement: true
             },
             userID: DataTypes.STRING,
+            userName: DataTypes.STRING,
             friendID: DataTypes.STRING,
             isFriend: DataTypes.BOOLEAN,
             createdAt: DataTypes.DATE,
