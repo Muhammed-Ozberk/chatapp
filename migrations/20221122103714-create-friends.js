@@ -8,15 +8,19 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      userID: {
+      firstUserID: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      userName: {
+      firstUserName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      friendID: {
+      secondUserID: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      secondUserName: {
         type: Sequelize.STRING,
         allowNull: false,
       },

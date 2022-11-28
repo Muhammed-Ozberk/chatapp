@@ -433,7 +433,10 @@
 	<script src="/socket.io/socket.io.js"></script>
 
 	<script>
-		var socket = io();
+	    const token = sessionStorage.getItem("token");
+        var socket = io({
+		    query: {token}
+	    });
         socket.on("connect", () => {
             console.log( "connected" )
         });

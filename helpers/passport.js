@@ -1,5 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+const config = require('../config/config');
 
 /** DB Models */
 const allModels = require("./../models");
@@ -29,7 +31,8 @@ module.exports = function (passport) {
 
     passport.serializeUser(function (user, cb) {
         process.nextTick(function () {
-            cb(null, { id: user.userID, username: user.username, themeMode: user.themeMode, email: user.email });
+            const token = jwt.sign({username:user.username},config.jwt.secretKey, config.jwt.options);
+            cb(null, { id: user.userID, username: user.username, themeMode: user.themeMode, email: user.email,token:token });
         });
     });
 

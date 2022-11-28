@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
+
 const chatList = require('../helpers/listFunction');
 
 
@@ -25,6 +26,7 @@ router.get('/chats', async function (req, res, next) {
   const userID = user.id;
   var activePage = "chats";
   var userAvatar = null;
+  var token = user.token;
 
   try {
 
@@ -33,11 +35,13 @@ router.get('/chats', async function (req, res, next) {
     //call up chat list
     var _chatList = await chatList(userID);
 
+
     var data = {
       activePage,
       _chatList,
       userAvatar,
-      themeMode
+      themeMode,
+      token
     };
 
     res.render('pages/chats', { title: "Chats", data });
@@ -110,28 +114,36 @@ router.get('/contacts', async function (req, res, next) {
   var username = user.username;
   var themeMode = user.themeMode;
   var activePage = "contacts";
+  var userID = user.id;
   var userList = [];
   var userAvatar = null;
 
   userAvatar = username.slice(0, 1).toUpperCase();
 
   try {
-    const users = await Users.findAll({
+    const users = await Friends.findAll({
       attributes: [
-        'userID',
-        'username',
-        'email',
+        'firstUserID',
+        'firstUserName',
+        'secondUserID',
+        'secondUserName'
       ],
       where: {
-        username: {
-          [Op.ne]: username
-        }
+        [Op.or]: [
+          {
+            firstUserID: user.id,
+            isFriend: true
+          },
+          {
+            secondUserID: user.id,
+            isFriend: true
+          }
+        ]
       },
       order: [
-        ['username', 'ASC'],
+        ['id', 'ASC'],
       ]
     });
-
 
     if (users) {
       users.forEach(element => {
@@ -140,11 +152,11 @@ router.get('/contacts', async function (req, res, next) {
 
       const friendRequests = await Friends.findAll({
         attributes: [
-          'userID',
-          'userName',
+          'firstUserID',
+          'firstUserName',
         ],
         where: {
-          friendID: user.id,
+          secondUserID: user.id,
           isFriend: false
         }
       });
@@ -153,7 +165,8 @@ router.get('/contacts', async function (req, res, next) {
         userList,
         userAvatar,
         themeMode,
-        friendRequests
+        friendRequests,
+        userID
       };
       res.render('pages/contacts', { title: "Contacts", data });
     } else {
@@ -293,24 +306,25 @@ router.get('/theme-mode', async function (req, res, next) {
 
 });
 
-router.get('/add-to-friends/:friendID', async function (req, res, next) {
-  const { friendID } = req.params;
+router.get('/add-to-friends/:friendID/:friendName', async function (req, res, next) {
+  const { friendID, friendName } = req.params;
   var user = req.session.passport.user;
 
   try {
     const friendRequest = await Friends.findOne({
       where: {
-        userID: user.id,
-        friendID: friendID
+        firstUserID: user.id,
+        secondUserID: friendID
       }
     })
     if (friendRequest) {
       res.redirect('/contacts');
     } else {
       const savedFriend = await Friends.create({
-        userID: user.id,
-        userName: user.username,
-        friendID: friendID,
+        firstUserID: user.id,
+        firstUserName: user.username,
+        secondUserID: friendID,
+        secondUserName: friendName
       });
       if (savedFriend) {
         res.redirect('/contacts');
@@ -330,14 +344,14 @@ router.get('/accept-the-request/:userID', async function (req, res, next) {
   try {
     const friendRequest = await Friends.findOne({
       where: {
-        userID: userID,
-        friendID: user.id,
+        firstUserID: userID,
+        secondUserID: user.id,
         isFriend: false
       }
     });
     if (friendRequest) {
       const acceptedRequest = await friendRequest.update({
-        isFriend:true
+        isFriend: true
       })
       res.redirect('/contacts')
     } else {

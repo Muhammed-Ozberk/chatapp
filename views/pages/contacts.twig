@@ -13,10 +13,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
             <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
             </svg>                           
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {# <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 99+
-                {# <span class="visually-hidden">unread messages</span> #}
-            </span>           
+                {# <span class="visually-hidden">unread messages</span> 
+            </span>            #}
         </div> 
     </div>
       <div class="user-chat-nav float-end">
@@ -61,8 +61,8 @@
                                                     <li>
                                                         <div class="form-check">
                                                             <h5 class="text-truncate font-size-15 mb-1">
-                                                                {{row.userName}}
-                                                            <a href="/accept-the-request/{{row.userID}}" style="right: 85px; position: absolute; background-color: #6159cb; padding: 5px;
+                                                                {{row.firstUserName}}
+                                                            <a href="/accept-the-request/{{row.firstUserID}}" style="right: 85px; position: absolute; background-color: #6159cb; padding: 5px;
                                                             border-radius: 5px; color: white;font-size: small;">Kabul Et</a>
                                                             <a href="#" style="right: 25px; position: absolute; background-color: #d82550; padding: 5px;
                                                             border-radius: 5px; color: white;font-size: small;">Reddet</a> 
@@ -81,7 +81,7 @@
                                                     </li> #}
                                                 </ul>
                                             </div>
-                                            <div>
+                                            {# <div>
                                                 <div class="p-3 fw-bold text-primary">
                                                     Bildirimler
                                                 </div>
@@ -93,7 +93,7 @@
                                                         </div>
                                                     </li>
                                                 </ul>
-                                            </div>
+                                            </div> #}
                                         </div>
                                     </div>
                                 </div>
@@ -188,15 +188,24 @@
       {% endif %}
       {% if data %}
         {% for row in data.userList %}
+
           <div class="mt-3">
             <ul class="list-unstyled contact-list">
               <li>
                 <div class="d-flex align-items-center">
-                  <div class="flex-grow-1">
-                    <a href="/contacts/{{row.userID}}">
-                      <h5 class="font-size-14 m-0">{{ row.username }}</h5>
-                    </a>
-                  </div>
+                  {% if row.firstUserID == data.userID %}
+                    <div class="flex-grow-1">
+                      <a href="/contacts/{{row.secondUserID}}">
+                        <h5 class="font-size-14 m-0">{{ row.secondUserName }}</h5>
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="flex-grow-1">
+                      <a href="/contacts/{{row.firstUserID}}">
+                        <h5 class="font-size-14 m-0">{{ row.firstUserName }}</h5>
+                      </a>
+                    </div>
+                  {% endif %}
                   <div class="dropdown">
                     <a href="#"
                       class="text-muted dropdown-toggle"
@@ -269,7 +278,7 @@
                             <div class="form-check">
                                 <h5 class="text-truncate font-size-15 mb-1">
 									${element.username}
-                                    <a href="/add-to-friends/${element.userID}" style="right: 25px; position: absolute; background-color: #6159cb; padding: 5px;
+                                    <a href="/add-to-friends/${element.userID}/${element.username}" style="right: 25px; position: absolute; background-color: #6159cb; padding: 5px;
                                         border-radius: 5px; color: white;font-size: small;">Arkadaş ekle</a>
 								</h5>
                             </div>`

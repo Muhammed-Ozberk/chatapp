@@ -7,9 +7,10 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true
             },
-            userID: DataTypes.STRING,
-            userName: DataTypes.STRING,
-            friendID: DataTypes.STRING,
+            firstUserID: DataTypes.STRING,
+            firstUserName: DataTypes.STRING,
+            secondUserID: DataTypes.STRING,
+            secondUserName: DataTypes.STRING,
             isFriend: DataTypes.BOOLEAN,
             createdAt: DataTypes.DATE,
             updatedAt: DataTypes.DATE
